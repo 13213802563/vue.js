@@ -1,21 +1,26 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <Model/>
-    <HelloWorld/>
-  
+<!--      <Model/>-->
+<!--    <HelloWorld/>-->
+<!--       <Compute/>-->
+       <Myprop/>
   </div>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld';
-import Model from './components/Model'
+import Model from './components/Model';
+import Compute from './components/Compute';
+import Myprop from './components/Myprop'
 
 export default {
   name: 'App',
   components: {
     HelloWorld,
-    Model
+    Model,
+    Compute,
+    Myprop
   }
 }
 </script>
@@ -30,3 +35,4 @@ export default {
   margin-top: 60px;
 }
 </style>
+
