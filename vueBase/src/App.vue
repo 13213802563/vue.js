@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
 <!--      <Model/>-->
 <!--    <HelloWorld/>-->
 <!--       <Compute/>-->
-       <Myprop/>
+<!--       <Myprop/>-->
+       <Parent/>
   </div>
 </template>
 
@@ -12,7 +12,10 @@
 import HelloWorld from './components/HelloWorld';
 import Model from './components/Model';
 import Compute from './components/Compute';
-import Myprop from './components/Myprop'
+import Myprop from './components/Myprop';
+import Parent from './components/Parent';
+
+
 
 export default {
   name: 'App',
@@ -20,7 +23,8 @@ export default {
     HelloWorld,
     Model,
     Compute,
-    Myprop
+    Myprop,
+    Parent
   }
 }
 </script>
