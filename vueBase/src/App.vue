@@ -4,7 +4,8 @@
 <!--    <HelloWorld/>-->
 <!--       <Compute/>-->
 <!--       <Myprop/>-->
-       <Parent/>
+     <!--  <Parent/>-->
+     <parents/>
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import Model from './components/Model';
 import Compute from './components/Compute';
 import Myprop from './components/Myprop';
 import Parent from './components/Parent';
+import parents from  './components/parentSon/parents'
 
 
 
@@ -24,7 +26,9 @@ export default {
     Model,
     Compute,
     Myprop,
-    Parent
+    Parent,
+    parents
+    
   }
 }
 </script>
@@ -39,4 +43,5 @@ export default {
   margin-top: 60px;
 }
 </style>
+
 
