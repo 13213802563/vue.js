@@ -5,7 +5,9 @@
 <!--       <Compute/>-->
 <!--       <Myprop/>-->
      <!--  <Parent/>-->
-     <parents/>
+    <!-- <parents/>-->
+     <parent/>
+     <big/>
   </div>
 </template>
 
@@ -15,8 +17,9 @@ import Model from './components/Model';
 import Compute from './components/Compute';
 import Myprop from './components/Myprop';
 import Parent from './components/Parent';
-import parents from  './components/parentSon/parents'
-
+import parents from  './components/parentSon/parents';
+import parent from  './components/slots/parent';
+import big from  './components/comkeep/big';
 
 
 export default {
@@ -27,8 +30,9 @@ export default {
     Compute,
     Myprop,
     Parent,
-    parents
-    
+    parents,
+    parent,
+    big  
   }
 }
 </script>
