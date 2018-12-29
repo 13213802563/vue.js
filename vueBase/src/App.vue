@@ -6,8 +6,9 @@
 <!--       <Myprop/>-->
      <!--  <Parent/>-->
     <!-- <parents/>-->
-     <parent/>
-     <big/>
+     <!--<parent/>
+     <big/>-->
+     <Anim/>
   </div>
 </template>
 
@@ -20,7 +21,7 @@ import Parent from './components/Parent';
 import parents from  './components/parentSon/parents';
 import parent from  './components/slots/parent';
 import big from  './components/comkeep/big';
-
+import Anim from './components/anim/anim'
 
 export default {
   name: 'App',
@@ -32,7 +33,8 @@ export default {
     Parent,
     parents,
     parent,
-    big  
+    big,
+    Anim
   }
 }
 </script>
@@ -47,5 +49,3 @@ export default {
   margin-top: 60px;
 }
 </style>
-
-
