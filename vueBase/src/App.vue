@@ -9,6 +9,7 @@
      <!--<parent/>
      <big/>-->
      <Anim/>
+     <directive/>
   </div>
 </template>
 
@@ -21,7 +22,8 @@ import Parent from './components/Parent';
 import parents from  './components/parentSon/parents';
 import parent from  './components/slots/parent';
 import big from  './components/comkeep/big';
-import Anim from './components/anim/anim'
+import Anim from './components/anim/anim';
+import directive from './components/directive';
 
 export default {
   name: 'App',
@@ -34,7 +36,8 @@ export default {
     parents,
     parent,
     big,
-    Anim
+    Anim,
+    directive
   }
 }
 </script>
