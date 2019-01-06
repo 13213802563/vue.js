@@ -41,7 +41,7 @@ Axios
 		axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 		axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 	5.拦截器
-
+            安装服务器   cnpm install --save-dev express mysql
 	6.跨域处理：
 		修改config index.js文件
 			proxyTable: {
@@ -76,8 +76,7 @@ MockJS:
 		'list|1-10': [{
 			'id|+1': 1
 		}]
-
-		1.'name|1': array
+	1.'name|1': array
 
 		从属性值 array 中随机选取 1 个元素，作为最终值。
 
