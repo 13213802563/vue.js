@@ -1,16 +1,17 @@
 <template>
 	<div class="hello">
 		<ul>
-			<!--<li v-for='news in newsData'>
+		  get请求
+			<li v-for='news in newsData'>
 				<p>{{news.title}}</p>
-			</li>-->
+			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
 	export default {
-		name: 'HelloWorld',
+		name: 'get',
 		data() {
 			return {
 				newsData: []
@@ -18,15 +19,19 @@
 			}
 		},
 		created() {
-			this.$axios("http://www.wwtliu.com/sxtstu/news/juhenews.php", {
+			   var url=this.HOST+'/movie/top250';
+//			   "http://www.wwtliu.com/sxtstu/news/juhenews.php"
+			this.$axios.get(url, {
 					params: {
-						type: 'junshi',
-						count: 30
+//						type: 'junshi',
+//						count: 30
+              	count:10,
+            		start:0
 					}
 				})
 				.then(res => {
-					this.newsData = res.data;
-					console.log(res.data);
+					this.newsData = res.data.subjects;
+					console.log(res.data.subjects);
 				})
 				.catch(error => {
 					console.log(error);
