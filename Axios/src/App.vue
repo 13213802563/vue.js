@@ -2,6 +2,7 @@
   <div id="app">
     <img src="./assets/logo.png">
     <get/>
+     <post/>
   </div>
 </template>
 
@@ -12,7 +13,8 @@ import post from './components/post'
 export default {
   name: 'App',
   components: {
-    get
+    get,
+    post
   }
 }
 </script>
