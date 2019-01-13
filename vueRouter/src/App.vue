@@ -2,19 +2,22 @@
   <div id="app">
     <img src="./assets/logo.png">
 <!--   <HelloWorld/>-->
-      <navList/>
+     <!-- <navList/> -->
    <router-view></router-view> 
   </div>
 </template>
 
 <script>
 //import HelloWorld from './components/HelloWorld'
-  import navList from  './components/NavList'
+ // import navList from  './components/NavList'
 export default {
   name: 'App',
+  data(){
+    return{}
+  },
   components: {
 //  HelloWorld
-    navList
+   // navList
    
   }
 }
