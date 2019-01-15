@@ -23,6 +23,7 @@ Vue.use(VueRouter)
 // 	 ]
 // });
 export default new Router({
+	//history.back()
 	mode: "history",
 	linkActiveClass: "active",
 	routes: [{
