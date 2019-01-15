@@ -4,7 +4,7 @@
 	   <div class="left">
 	  	  课程页面
 	  	  <ul>
-	  	 	<li><router-link to='/course/java'>java</router-link></li>
+	  	 	<li><router-link exact to='/course/java'>java</router-link></li>
 	  	 	<li><router-link to='/course/web'>前端</router-link></li>
 	  	 	<li><router-link to='/course/android'>android</router-link></li>
 	  	  </ul>
