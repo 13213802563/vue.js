@@ -1,7 +1,7 @@
 <template>
 	<div>
-		专家:{{ $route.params.count }}
-		{{ $route.path }}
+		专家:{{ $route.params.count }}-{{$route.params.type.name}}
+	<!--	{{ $route.path }}-->
 	</div>
 </template>
 
@@ -12,7 +12,8 @@
 			return{
 			}
 		},
-		components:{		
+		components:{	
+			
 		}
 	}
 </script>
