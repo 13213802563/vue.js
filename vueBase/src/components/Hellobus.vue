@@ -1,18 +1,26 @@
 <template>
-	<div v-for="(index1, item) in goodsObj" class="store-item">
+  <div>
+	<ul>
+	  <li v-for="(item,index1) in goodsObj" class="store-item">
 		<p>
 			<span v-html="item.name"></span>
 			<label>
 		      <input type="checkbox" name="all" v-on:click="chooseShopGoods(index1)" v-model="item.checked" />
-		      <span>全选</span>
+		      <span>店铺全选</span>
 		    </label>
 		</p>
-		<a href="javascript:;" rel="external nofollow" rel="external nofollow" rel="external nofollow" rel="external nofollow" rel="external nofollow" v-for="(index, data) in item.list" class="goods-item">
-			<input type="checkbox" v-model="data.checked" v-on:click="choose(index1, index)" /> 商品名称:
-			<span v-html="data.name"></span> | 价格:
-			<span v-html="data.price"></span>
+		<a href="javascript:;" rel="external nofollow"  v-for="(data,index) in item.list" class="goods-item">
+			<input type="checkbox" v-model="data.checked" v-on:click="choose(index1, index)" /> 
+				商品名称:<span v-html="data.name"></span> 
+				| 价格:<span v-html="data.price"></span>
 		</a>
-	</div>
+	  </li>
+   </ul>
+   <label>
+	  <input type="checkbox" name="all" v-on:click="chooseAllGoods()" v-model="allChecked" />
+	  <span>全部全选</span>
+	</label>
+  </div>
 </template>
 
 <script>
@@ -49,7 +57,7 @@
       }
     ]
   },
- 
+
   {
     name : '二胖的店',
     checked : false,
@@ -145,13 +153,15 @@
       chooseShopGoods : function(index) {
       var list = this.goodsObj[index]['list'],
         len = list.length;
+        console.log(this.goodsObj[index]['checked'])
       if ( this.goodsObj[index]['checked'] ) {
         for (var i = 0; i < len; i++ ) {
           list[i]['checked'] = false;
         }
-      } else {
+      } 
+      else {
         for (var i = 0; i < len; i++ ) {
-          list[i]['checked'] = true;
+            list[i]['checked'] = true;
         }
       }
       this.goodsObj[index]['checked'] = !this.goodsObj[index]['checked'];
@@ -159,13 +169,12 @@
       // 判断是否选择所有商品的全选
       this.isChooseAll();
     },
- 
     // 单个选择
       choose : function(index1, index) {
       var list = this.goodsObj[index1]['list'],
         len = list.length;
       if ( list[index]['checked'] ) {
-        this.goodsObj[index1]['checked'] = false;
+         this.goodsObj[index1]['checked'] = false;
         this.allChecked = false;
         list[index]['checked'] = !list[index]['checked'];
       } else {
@@ -214,6 +223,7 @@
 }
 a {
   color: #333;
+  display: block;
   text-decoration:none;
 }
 h1, h2 {
