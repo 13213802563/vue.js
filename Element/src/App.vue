@@ -3,7 +3,9 @@
     <img src="./assets/logo.png">
 <!--    <HelloWorld/>-->
 <!--    <HelloSwiper1/>-->
-<HelloSwiper2/>
+<!--     <lazyload/>-->
+<!--<HelloSwiper2/>-->
+   <HelloREM/>
   </div>
 </template>
 
@@ -11,13 +13,18 @@
 import HelloWorld from './components/HelloWorld';
 import HelloSwiper1 from "@/components/HelloSwiper1";
 import HelloSwiper2 from "@/components/HelloSwiper2";
+import lazyload from '@/components/lazyload';
+import HelloREM　from '@/components/HelloREM'
+
 export default {
   name: 'App',
   components: {
-    HelloWorld,
-    HelloSwiper1,
-    HelloSwiper2
-  }
+//  HelloWorld,
+//  HelloSwiper1,
+//  HelloSwiper2,
+//  lazyload,
+    HelloREM
+  },
 }
 </script>
 
@@ -31,3 +38,4 @@ export default {
   margin-top: 60px;
 }
 </style>
+
