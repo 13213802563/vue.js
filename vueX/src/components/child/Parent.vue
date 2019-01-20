@@ -1,7 +1,8 @@
 <template>
 	<div>
-		父亲
-	<Child :title='msg'/>
+		父亲:
+		{{info}}
+	<Child :title='msg' @info='handlerMsg'/>
 	</div>
 </template>
 
@@ -11,11 +12,17 @@
 		name:'parent',
 		data(){
 			return{
-				 msg:'儿子，父亲给你传递数据里'
+				 msg:'儿子，父亲给你传递数据里',
+				 info:''
 			}
 		},
 		components:{
 			Child
+		},
+		methods:{
+			handlerMsg(data){
+				this.info=data;
+			}
 		}
 	}
 </script>
