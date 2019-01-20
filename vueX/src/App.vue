@@ -1,16 +1,27 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <router-view/>
+<!--    <router-view/>-->
+<!--     <HelloWorld/>-->
+     <Parent/>
+     <outer/>
 
   </div>
 </template>
 
 <script>
-	
+import HelloWorld from '@/components/HelloWorld'
+import Parent from '@/components/child/Parent'
+import outer from '@/components/outer'
+
+
 export default {
   name: 'App',
   components: {
+  	HelloWorld,
+  	 Parent,
+  	 outer
+  	
   }
 }
 </script>
