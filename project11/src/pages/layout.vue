@@ -59,8 +59,7 @@
 		</div>
 	</div>
 </template>
-<script>
-	
+<script>	
 export default{
 	name:"layout",
 	data(){
@@ -161,7 +160,7 @@ export default{
 			}
 		})
 		.then(res => {
-			this.news = res.data.result.data;
+			this.news = res.data;
 		})
 		.catch(error => {
 			console.log(error)
@@ -170,9 +169,7 @@ export default{
 }	
 
 </script>
-
 <style scoped>
-
 .index-wrap {
   width: 1200px;
   margin: 0 auto;
