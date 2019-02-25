@@ -1,21 +1,25 @@
-# vr
+1.安装
+	npm install --save vue-router
+2.引用
+	import router from "vue-router"
+	Vue.use(router)
+3.配置路由文件
+	var router = new VueRouter({
+		routes: [{
+			path: "/",
+			component: HelloWorld
+		}]
+	})
+	new Vue({
+		el: '#app',
+		template: '<App/>',
+		router,
+		components: {
+			App
+		}
+	})
+4.视图加载的位置
+	<router-view></router-view>
 
-> A Vue.js project
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+5.跳转（导航）
+	<router-link to="/">helloworld</router-link>
