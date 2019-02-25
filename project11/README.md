@@ -1,2 +1,8 @@
 路由npm安装：npm  install vue-Router
 axios请求的安装：npm install axios
+
+vue的安装：
+npm install -g vue-cli
+vue init webpack project
+cd project
+npm run dev
