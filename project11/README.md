@@ -6,3 +6,7 @@ npm install -g vue-cli
 vue init webpack project
 cd project
 npm run dev
+
+swiper：http://github.com/surmon-china/vue-awesome-swiper
+安装：npm install vue-awesome-swiper --save
+
