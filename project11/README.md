@@ -9,4 +9,7 @@ npm run dev
 
 swiper：http://github.com/surmon-china/vue-awesome-swiper
 安装：npm install vue-awesome-swiper --save
-
+引入：
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/dist/css/swiper.css'
+Vue.use(VueAwesomeSwiper)
