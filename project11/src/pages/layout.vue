@@ -1,69 +1,76 @@
 <template>
 	<div class="index-wrap">
-		<div class="index-left">
-			<div class="index-left-block">
-				<h2>全部产品</h2>	
-				<template v-for="(product,index) in productList">
-					<h3>{{ product.category }}</h3>
-					<ul>
-						<li v-for="item in product.list">
-							<a target="_blank" :href="item.url">{{ item.name }}</a>
-							<span v-if="item.hot" class="hot-tag">HOT</span>
-						</li>
-					</ul>
-					<div v-if="index%2 == 0" class="hr"></div>
-				</template>
-			</div>
-			<div class="index-left-block lastest-news">
-				<h2>最新消息</h2>
-				<ul>
-					<li v-for="item in news">
-						<a target="_blank" :href="item.url">{{ item.author_name }}</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="index-right">
-			<div class="swiper-size">
-				<swiper :options="swiperOption">
-				    <swiper-slide>
-				    	<a target="_blank" href="http://www.wwtliu.com/blog">
-				    		<img class="swiperimg" :src="swiperData[0]" alt="">
-				    	</a>
-				    </swiper-slide>
-				    <swiper-slide>
-				    	<img class="swiperimg" :src="swiperData[1]" alt="">
-				    </swiper-slide>
-				    <swiper-slide>
-				    	<img class="swiperimg" :src="swiperData[2]" alt="">
-				    </swiper-slide>
-				    <swiper-slide>
-				    	<img class="swiperimg" :src="swiperData[3]" alt="">
-				    </swiper-slide>
-				    <div class="swiper-pagination"  slot="pagination"></div>
-				    <div class="swiper-button-prev" slot="button-prev"></div>
-				    <div class="swiper-button-next" slot="button-next"></div>
-				</swiper>
-			</div>
-			<div class="index-board-list">
-				<div class="index-board-item" v-for="(borad,index) in boradList" :class="['index-board-'+ borad.tag ,{'line-last' : index%2 !==0}]">
-					<div class="index-board-item-inner">
-						<h2>{{ borad.title }}</h2>
-						<p>{{ borad.desc }}</p>
-						<div class="index-board-button">
-							<router-link :to="{path:'/details/'+borad.tag}" class="button">立即购买</router-link>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+
+	  <div class="index-left">	  	
+	  <!--  产品列表-->
+	    <div class="index-left-block">
+	      <h2>全部产品</h2>
+	      <template v-for="(product,index) in productList">
+	      	<h3>{{ product.category }}</h3>
+	      	<ul>
+	      		<li v-for="item in product.list">
+	      			<a target="_blank" :href="item.url">{{item.name}}</a>
+	      			<span v-if="item.hot" class="hot-tag">HOT</span>
+	      		</li>		
+	      	</ul>
+	      	<div v-if="index%2==0" class="hr"></div>
+	      </template>
+	    </div>
+	   <!-- 最新消息-->
+        <div class="index-left-block  lastest-news">
+        	<h2>最新消息	</h2>
+        	<ul>
+        		<li v-for="item in news">
+        			<a target="_blank" :href="item.url">{{item.author_name}}</a>
+        		</li>
+        	</ul>
+        </div>	
+	  </div>
+	  <div class="index-right">
+	  	<!--轮播图-->
+	  	<div class="swiper-size">
+	  		 <!-- swiper -->
+		      <swiper :options="swiperOption">
+		        <swiper-slide>
+		        	<a target="_blank" href="http://www.wwtliu.com/blog">
+		        		<img class="swiperimg" :src="swiperData[0]" alt="">
+		        	</a>
+		        </swiper-slide>
+		        <swiper-slide>
+		        	<img class="swiperimg" :src="swiperData[1]" alt="">
+		        </swiper-slide>
+		        <swiper-slide>
+		        	<img class="swiperimg" :src="swiperData[2]" alt="">
+		        </swiper-slide>
+		        <swiper-slide>
+		        	<img class="swiperimg" :src="swiperData[3]" alt="">
+		        </swiper-slide>
+		        <div class="swiper-pagination" slot="pagination"></div>
+		        <div class="swiper-button-prev" slot="button-prev"></div>
+				<div class="swiper-button-next" slot="button-next"></div>
+		      </swiper>
+	  	</div>
+	   
+	   <div class="index-board-list">
+	   <!--	{'line-last':index%2!==0}]-->
+	   	 <div class="index-border-item" v-for="(borad,index) in boradList" :class="['index-board-'+borad.tag,{'line-last':index%2!==0}]">
+	   	    <div class="index-board-item-inner">
+	   	    	<h2>{{borad.title}}</h2>
+	   	    	<p>{{borad.desc}}</p>
+	   	    	<div class="index-board-button">
+	   	    		<router-link :to="{path:'/details/'+borad.tag}"  class="button">立即购买</router-link>
+	   	    	</div>
+	   	    </div>
+	   	 </div>
+	   </div>
+	  </div>
 	</div>
 </template>
-<script>	
-export default{
-	name:"layout",
-	data(){
-		return{
+
+<script>export default {
+	name: "layout",
+	data() {
+		return {
 			swiperData:[
 				require("../assets/slideShow/j1.jpg"),
 				require("../assets/slideShow/j2.jpg"),
@@ -80,7 +87,7 @@ export default{
 				    prevEl: '.swiper-button-prev',
 				}
 	        },
-	        boradList:[
+	         boradList:[
 	        	{
 	        		title:"开放产品",
 	        		desc:"开放产品是一款开放产品",
@@ -102,74 +109,76 @@ export default{
 	        		tag:"hill"
 	        	}
 	        ],
-			news:[],
-			productList:[
-				{
-					category:"手机应用类",
-					list:[
-						{
-							name:"91助手",
-							url:"http://www.wwtliu.com/blog",
-							hot:false
+			
+			productList: [{
+					category: "手机应用类",
+					list: [{
+							name: "91助手",
+							url: "http://www.wwtliu.com/blog",
+							hot: false
 						},
 						{
-							name:"豌豆荚",
-							url:"http://www.wwtliu.com/blog",
-							hot:true
+							name: "豌豆荚",
+							url: "http://www.wwtliu.com/blog",
+							hot: true
 						},
 						{
-							name:"金山毒霸",
-							url:"http://www.wwtliu.com/blog",
-							hot:false
+							name: "金山毒霸",
+							url: "http://www.wwtliu.com/blog",
+							hot: false
 						}
 					]
 				},
 				{
-					category:"开发工具",
-					list:[
-						{
-							name:"WebStorm",
-							url:"http://www.wwtliu.com/blog",
-							hot:false
+					category: "开发工具",
+					list: [{
+							name: "WebStorm",
+							url: "http://www.wwtliu.com/blog",
+							hot: false
 						},
 						{
-							name:"HBuiler",
-							url:"http://www.wwtliu.com/blog",
-							hot:true
+							name: "HBuiler",
+							url: "http://www.wwtliu.com/blog",
+							hot: true
 						},
 						{
-							name:"Sublime Text 3",
-							url:"http://www.wwtliu.com/blog",
-							hot:false
+							name: "Sublime Text 3",
+							url: "http://www.wwtliu.com/blog",
+							hot: false
 						},
 						{
-							name:"Atom",
-							url:"http://www.wwtliu.com/blog",
-							hot:true
+							name: "Atom",
+							url: "http://www.wwtliu.com/blog",
+							hot: true
 						}
 					]
 				}
-			]
+			],
+			news:[],
+		
 		}
 	},
 	created(){
 		this.$axios.get("http://www.wwtliu.com/sxtstu/news/juhenews.php",{
 			params:{
-				count:10,
-				type:"top"
+				count:'10',
+				type:'top'
 			}
 		})
 		.then(res => {
-			this.news = res.data;
+			this.news=res.data;
+			console.log(res.data);
 		})
 		.catch(error => {
 			console.log(error)
 		})
 	}
-}	
 
+}
 </script>
+
 <style scoped>
+
 .index-wrap {
   width: 1200px;
   margin: 0 auto;
