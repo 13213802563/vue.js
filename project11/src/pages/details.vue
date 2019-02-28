@@ -4,6 +4,9 @@
 			<div class="product-board">
 				<img :src="getUrl" alt="">
 				<ul>
+					<!--相当于li标签，故需要tag="li"-->
+					<!--active-class="active" 点击高亮-->
+					<!--:key="index"  严谨来些  作为-->
 					<router-link active-class="active" :to="{path:'/details/'+nav.tag}" :key="index" tag="li" v-for="(nav,index) in detailsNav">{{ nav.title }}</router-link>
 				</ul>
 			</div>
@@ -38,14 +41,14 @@ export default {
 				}
 			],
       imgUrl:{
-        "/details/earth":require("../assets/images/1.png"),
+        "/details/earth":require("../assets/images/3.png"),
         "/details/loud":require("../assets/images/2.png"),
-        "/details/car":require("../assets/images/3.png"),
+        "/details/car":require("../assets/images/1.png"),
         "/details/hill":require("../assets/images/4.png")
       }
 		}
 	},
-  computed:{
+  computed:{//计算属性
     getUrl(){
       return this.imgUrl[this.$route.path];
     }
