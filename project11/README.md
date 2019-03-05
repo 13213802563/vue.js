@@ -28,7 +28,7 @@ Vue.use(VueAwesomeSwiper)
           }
        }
  父传子：prop
-    父亲：<child :message="msg"></child>
+    父亲：<child :msg="message"></child>/////将父页面数据源msg传给子页面的message
     子：
          //第一种
           props:['msg']   //用对应的变量名接受对应的自定义属性的值
@@ -37,12 +37,14 @@ Vue.use(VueAwesomeSwiper)
                  msg:{
                      //配置接收的数据类型、验证
                      type:[String,Number]
-                     required:true
+                     required:true,
+                     default:function(){
+                        return[
+                          {}
+                        ]
+                     }
                   }
              }
-             data:{
-                    msg:"hello"
-                }
-    
+            
     
 
