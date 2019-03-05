@@ -12,7 +12,8 @@
 	   	 	</div>
 	   	 	<div class="sales-board-line-right">
 	   	 		<keep-alive>
-	   	 			<!--<Counter @counter="get">-->
+	   	 		<!--	@counter="getGoodInfo('counter',$event)"-->
+                    <counter  @counter="getGoodInfo('counter',$event)"     :max="Counter.max"  :min="Counter.min"/>
 	   	 		</keep-alive>
 	   	 	</div>
 	   	 </div>
@@ -22,7 +23,11 @@
 	   	  	 产品类型：
 	   	  </div>
 	   	  <div class="sales-board-line-right">
-	   	  	<keep-alive></keep-alive>
+	   	  	<keep-alive>
+	   	  	<!--	@downmenu="getGoodInfo('downmenu',$event)"   :DownData="DownMenu" -->
+	   	  	<!--:DownData="DownMenu"  将父页面数据源DownMenu传给子页面的DowmData-->
+            	<DownMenu  @downmenu="getGoodInfo('downmenu',$event)" :DownData="DownMenu"/>
+	   	  	</keep-alive>
 	   	  </div>
 	   </div>
 	<!--   有效时间-->
@@ -31,7 +36,9 @@
 	 		有效时间：
 	 	</div>
 	 	<div class="sales-board-line-right">
-	 		<keep-alive></keep-alive>
+	 		<keep-alive>
+	 			<Radios @radios="getGoodInfo('radios',$event)" :Radios="Radios"/>
+	 		</keep-alive>
 	 	</div>
 	 </div>
 	 	<!-- 总价-->
@@ -40,7 +47,7 @@
 	 		总价：
 	 	</div>
 	 	<div class="sales-board-line-right">
-	 		
+	 		{{ getTotalPrice }}元
 	 	</div>
 	 </div>
 	 
@@ -80,21 +87,94 @@
 
 <script>
 	
-import Counter from "./components/Counter"
-import DownMenu from "./components/DownMenu"
-import Radios from "./components/Radios"
+	import Counter from "./components/Counter"
+	import DownMenu from "./components/DownMenu"
+	import Radios from "./components/Radios"
+
 	export default{
 		name:"car",
 		data(){
-			return{}
-		},
-		computed:{
-			
+			return{
+//				  初始化
+				  counter:1,
+			      downmenu:1,
+			      radios:1,
+			      totalprice:0,
+			      
+			      Radios:[
+			          {
+			            title:"1个月",
+			            value:1
+			          },
+			          {
+			            title:"3个月",
+			            value:3
+			          },
+			          {
+			            title:"半年",
+			            value:6
+			          },
+			          {
+			            title:"年费",
+			            value:12
+			          }
+			        ],
+				  Counter:{
+							max:10,
+							min:1
+						},
+				   DownMenu:[
+									{
+										name:"初级版",
+										value:1
+									},
+									{
+										name:"中级版",
+										value:2
+									},
+									{
+										name:"高级版",
+										value:3
+									}
+								]
+					
+			  }
 		},
 		components:{
 			Counter,
 			DownMenu,
 			Radios
+		},
+		methods:{
+			 // getCounterNum(data){
+		    //   console.log(data);
+		    // },
+		    // getDownMenu(data){
+		    //   console.log(data);
+		    // },
+		    // getRadios(data){
+		    //   console.log(data);
+		    // }
+            getGoodInfo(key,value){
+            	/*
+			        this:当前组件
+			      */
+            	this[key]=value;
+            	 var readyData = {
+			        "counter":this.counter, // 5元
+			        "downmenu":this.downmenu, // 2元
+			        "radios":this.radios // 10元
+			      };
+			       this.totalprice =  readyData.counter * 5 +  readyData.downmenu * 2 + readyData.radios * 10;
+            	
+            }
+		},
+		computed:{
+		    getTotalPrice(){
+		    	return this.counter * 5 +  this.downmenu * 2 + this.radios * 10
+		      //this.$store.dispatch("updatePrice", this.counter * 5 +  this.downmenu * 2 + this.radios * 10);
+		      //return this.$store.getters.getTotalPrice;
+		    }
 		}
 	}
 </script>
