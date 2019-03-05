@@ -1,54 +1,77 @@
 <template>
 	<div class="selection-component">
-		<div class="selection-show" @click="showHide">
-			<span>{{ this.DownData[nowIndex].name }}</span>
+	<!--	下拉菜单-->
+		<div class="selection-show"  @click="showHide">
+			<!--<span>初级版</span>--><!--//nowINdex为点击的索引-->
+			<span>{{this.DownData[nowIndex].name}}</span>
 			<div class="arrow"></div>
 		</div>
-		<div class="selection-list" v-show="show">
+		<!--	下拉菜单-->
+		<div class="selection-list"  v-show="show">
 			<ul>
-				<li @click="selectList(index)" v-for="(item,index) in DownData">{{ item.name }}</li>
+				<li @click="selectList(index)"  v-for="(item,index) in DownData">{{item.name}}</li>
 			</ul>
 		</div>
 	</div>
 </template>
 
 <script>
-	
-export default{
-	name:"downmenu",
-	data(){
-		return{
-			nowIndex:0,
-			show:false
-		}
-	},
-	props:{
-		DownData:{
-			type:Array,
-			default:function(){
-				return [
-							{
-								name:"test",
-								value:1
-							}
-						]
+	export default{
+		name:"downmenu",
+		data(){
+			return{
+				nowIndex:0,
+				show:false,
+				
+			}
+		},
+		props:{//prop返回数组数据类型
+//				DownData:{
+//						type:Array,
+//						default:function(){
+//							return[
+//							   {
+//									name:"初级版",
+//									value:1
+//								},
+//								{
+//									name:"中级版",
+//									value:2
+//								},
+//								{
+//									name:"高级版",
+//									value:3
+//								}
+//							]
+//						}
+//				}
+			DownData:{
+				type:Array,
+				default:function(){
+					return[
+					  {
+					  	name:"test",
+					  	value:1
+					  }
+					]
+				}
+			}
+		},
+		methods:{
+			selectList(index){
+				this.nowIndex=index;
+				this.show=false;
+ 				this.$emit("downmenu",this.DownData[index].value);
+			},
+			showHide(){
+				this.show=!this.show;
 			}
 		}
-	},
-	methods:{
-		selectList(index){
-			this.nowIndex = index;
-			this.show = false;
-			this.$emit("downmenu",this.DownData[index].value)
-			this.$store.dispatch("updateOrder",["downmenu",this.DownData[index].value])
-		},
-		showHide(){
-			this.show = !this.show;
-		}
+				
+		
 	}
-}
-
 </script>
+
 <style scoped>
 .selection-component {
   position: relative;
