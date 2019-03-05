@@ -1,42 +1,41 @@
 <template>
 	<div class="chooser-component">
-		<ul class="chooser-list">
+	   <ul class="chooser-list">
 			<li @click="choose(index)" v-for="(item,index) in Radios" :class="{'active':index == nowIndex}">{{ item.title }}</li>
 		</ul>
 	</div>
 </template>
 
 <script>
-	
-export default{
-	name:"radios",
-	data(){
-		return{
-			nowIndex:0
-		}
-	},
-	props:{//父亲传给儿子
-		Radios:{
-			type:Array,
-			default:function(){
-				return[///1个月
-					{
-						title:"test",
-						value:1
-					}
-				]
+	export default{
+		name:"radios",
+		data(){
+			return{
+			   nowIndex:0
+				
+			}
+		},	
+		props:{
+			Radios:{
+				type:Array,
+				default:function(){
+					return [
+					   {
+					   	title:"test",
+					   	value:1
+					   }
+					]
+				}
+			}	
+		},
+		methods:{
+			choose(index){
+				this.nowIndex=index;
+				this.$emit("radios",this.Radios[index].value)
+
 			}
 		}
-	},
-	methods:{
-		choose(index){
-			this.nowIndex = index;
-			this.$emit("radios",this.Radios[index].value)
-			this.$store.dispatch("updateOrder",["radios",this.Radios[index].value])
-		}
 	}
-}	
-
 </script>
 
 <style scoped>
