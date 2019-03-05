@@ -45,6 +45,27 @@ Vue.use(VueAwesomeSwiper)
                      }
                   }
              }
-            
-    
+        5.:class="{'active':index == nowIndex}"
+          if（index == nowIndex）条件为真的时候执行active
+        6.（1）:src="getUrl"   /////src绑定后面的返回值
+          （2）computed:{//计算属性
+                getUrl(){
+                  return this.imgUrl[this.$route.path];
+                }
+              }
+          （3）指定路径下 ，加载指定的图片
+              imgUrl:{
+                 "/details/earth":require("../assets/images/3.png"),
+                 "/details/loud":require("../assets/images/2.png"),
+                 "/details/car":require("../assets/images/1.png"),
+                 "/details/hill":require("../assets/images/4.png")
+               }
+    7. <ul>
+					<!--相当于li标签，故需要tag="li"--><!--router-link路由跳转  相当于a标签-->
+					<!--active-class="active" 点击高亮--><!--:to相当于src-->
+					<!--:key="index"  严谨来些  作为-->
+   <router-link active-class="active" :to="{path:'/details/'+nav.tag}" :key="index" tag="li" v-for="(nav,index) in detailsNav">
+      {{ nav.title }}</router-link>
+				</ul>
+      8.	redirect:"/details/earth",//重定向，默认打开第一个选中
 
