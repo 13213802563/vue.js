@@ -67,5 +67,11 @@ Vue.use(VueAwesomeSwiper)
    <router-link active-class="active" :to="{path:'/details/'+nav.tag}" :key="index" tag="li" v-for="(nav,index) in detailsNav">
       {{ nav.title }}</router-link>
 				</ul>
-      8.	redirect:"/details/earth",//重定向，默认打开第一个选中
+      8.redirect:"/details/earth",//重定向，默认打开第一个选中
+      9. v-bind指令用于设置HTML属性：v-bind:href  缩写为 :href
+         <a :href="{{url}}">aa</a>
+	 v-on 指令用于绑定HTML事件 ：v-on:click 缩写为 @click
+	 <a @click="get()">aa</a>
+	 
+         
 
