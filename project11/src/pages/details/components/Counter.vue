@@ -1,68 +1,64 @@
 <template>
 	<div class="counter-component">
-		<div class="counter-btn" @click="mins"> - </div>
+		<div class="counter-btn"  @click="mins">-</div>
 		<div class="counter-show">
-			<input type="text" v-model="number" @keyup="inputHandler">
+			<input type="text" v-model="number"  @keyup="inputHandler">
 		</div>
-		<div class="counter-btn" @click="maxs"> + </div>
-	</div>
+		<div class="counter-btn" @click="maxs">+</div>
+    </div>
 </template>
 
 <script>
-	
-export default{
-	name:"counter",
-	data(){
-		return{
-			number:1
-		}
-	},
-	props:{
-		max:{
-			type:Number,
-			default:5
-		},
-		min:{
-			type:Number,
-			default:1
-		}
-	},
-	methods:{
-		mins(){
-			if(this.number <= this.min){
-				return;
+	export default{
+		name:"counter",
+		data(){
+			return{
+				number:1
 			}
-			this.number--;
-			this.$emit("counter",this.number);//字传父亲
-			this.$store.dispatch("updateOrder",["counter",this.number])
 		},
-		maxs(){
-			if(this.number >= this.max){
-				return;
+		props:{//父亲传子
+			max:{
+				type:Number,
+				default:5
+			},
+			min:{
+				type:Number,
+				default:1
 			}
-			this.number++;
-			this.$emit("counter",this.number)
-			this.$store.dispatch("updateOrder",["counter",this.number])
 		},
-		inputHandler(){
-			// \D:非数字
-			let fix;
-			if(typeof this.number === "string"){
-				fix = Number(this.number.replace(/\D/g,""));
-			}else{
-				fix = this.number  //0
+		methods:{
+			mins(){
+				if(this.number<=this.min){
+					return;
+				}
+				this.number--;
+  				this.$emit("counter",this.number);//子传父亲
+			},
+			maxs(){
+				if(this.number>=this.max){
+						return ;
+				}
+				this.number++;
+				this.$emit("counter",this.number)
+			},
+			inputHandler(){
+			   let fix;
+			   
+			   if(typeof this.number === 'string'){//\D元字符可以匹配非数字字符，等价于"[^0-9]"
+			        fix=Number(this.number.replace(/\D/g,''));
+			   }else{
+			  	    fix=this.number;
+			   }
+			   
+			    if(fix>this.max||fix<this.min){
+			    	fix=this.min
+			    }
+			    this.number=fix;
+			    this.$emit("counter",this.number);
 			}
-			if (fix > this.max || fix < this.min) {
-				// 把最小值给他
-		        fix = this.min
-		    }
-			this.number = fix
-			this.$emit("counter",this.number)
-			this.$store.dispatch("updateOrder",["counter",this.number])
 		}
+		
 	}
-}
-
 </script>
 
 <style scoped>
