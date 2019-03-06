@@ -62,6 +62,7 @@
 				this.nowIndex=index;
 				this.show=false;
  				this.$emit("downmenu",this.DownData[index].value);
+ 				this.$store.dispatch("updateOrder",["downmenu",this.DownData[index].value])
 			},
 			showHide(){
 				this.show=!this.show;
