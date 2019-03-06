@@ -95,7 +95,7 @@
 		name:"car",
 		data(){
 			return{
-//				  初始化
+                // 初始化
 				  counter:1,
 			      downmenu:1,
 			      radios:1,
@@ -171,9 +171,15 @@
 		},
 		computed:{
 		    getTotalPrice(){
-		    	return this.counter * 5 +  this.downmenu * 2 + this.radios * 10
+		       //return this.counter * 5 +  this.downmenu * 2 + this.radios * 10;
+		    	this.$store.dispatch("updatePrice",this.counter * 5 +  this.downmenu * 2 + this.radios * 10);
+		    	return this.$store.getters.getTotalPrice;
+		    	
 		      //this.$store.dispatch("updatePrice", this.counter * 5 +  this.downmenu * 2 + this.radios * 10);
 		      //return this.$store.getters.getTotalPrice;
+		    },
+		    getOrder(){
+		    	return this.$store.getters.getOrder;
 		    }
 		}
 	}
