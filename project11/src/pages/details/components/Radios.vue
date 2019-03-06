@@ -31,7 +31,8 @@
 		methods:{
 			choose(index){
 				this.nowIndex=index;
-				this.$emit("radios",this.Radios[index].value)
+				this.$emit("radios",this.Radios[index].value);
+				this.$store.dispatch("updateOrder",["radios",this.Radios[index].value])
 
 			}
 		}
