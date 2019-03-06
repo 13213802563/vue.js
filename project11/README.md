@@ -55,6 +55,7 @@ Vue.use(VueAwesomeSwiper)
          1、可以通过直接赋值的方法进行改变        this.$store.state.id =  (要传递的参数id)
          2、官方建议的修改方法： this.$store.commit( 'setId' ，(要传递的参数id) )
       B界面接收变化数据参数：this.$store.state.id
+        this.$store.dispatch("updateOrder",["counter",this.number])
 	
         6.:class="{'active':index == nowIndex}"
           if（index == nowIndex）条件为真的时候执行active
@@ -72,9 +73,9 @@ Vue.use(VueAwesomeSwiper)
                  "/details/hill":require("../assets/images/4.png")
                }
    8. <ul>
-					<!--相当于li标签，故需要tag="li"--><!--router-link路由跳转  相当于a标签-->
-					<!--active-class="active" 点击高亮--><!--:to相当于src-->
-					<!--:key="index"  严谨来些  作为-->
+	<!--相当于li标签，故需要tag="li"--><!--router-link路由跳转  相当于a标签-->
+	<!--active-class="active" 点击高亮--><!--:to相当于src-->
+	<!--:key="index"  严谨来些  作为-->
    <router-link active-class="active" :to="{path:'/details/'+nav.tag}" :key="index" tag="li" v-for="(nav,index) in detailsNav">
       {{ nav.title }}</router-link>
 				</ul>
