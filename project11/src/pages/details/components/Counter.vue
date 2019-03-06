@@ -33,13 +33,15 @@
 				}
 				this.number--;
   				this.$emit("counter",this.number);//子传父亲
+  				this.$store.dispatch("updateOrder",["counter",this.number])
 			},
 			maxs(){
 				if(this.number>=this.max){
 						return ;
 				}
 				this.number++;
-				this.$emit("counter",this.number)
+				this.$emit("counter",this.number);
+				this.$store.dispatch("updateOrder",["counter",this.number])
 			},
 			inputHandler(){
 			   let fix;
@@ -55,6 +57,7 @@
 			    }
 			    this.number=fix;
 			    this.$emit("counter",this.number);
+			    this.$store.dispatch("updateOrder",["counter",this.number])
 			}
 		}
 		
