@@ -19,7 +19,7 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 Vue.use(VueAwesomeSwiper)
 
-4.子父级之间的通信
+4.普通子父级之间的通信
 子传父：this.$emit("方法","信息")
    子： sendMsgToParent:function(){
        this.$emit("listenToChildEvent",msg)
@@ -50,9 +50,15 @@ Vue.use(VueAwesomeSwiper)
                      }
                   }
              }
-        5.:class="{'active':index == nowIndex}"
+     5.使用vuex进行数据的传递：
+       A界面改变store中state里的参数： 
+         1、可以通过直接赋值的方法进行改变        this.$store.state.id =  (要传递的参数id)
+         2、官方建议的修改方法： this.$store.commit( 'setId' ，(要传递的参数id) )
+      B界面接收变化数据参数：this.$store.state.id
+	
+        6.:class="{'active':index == nowIndex}"
           if（index == nowIndex）条件为真的时候执行active
-        6.（1）:src="getUrl"   /////src绑定后面的返回值
+       7.（1）:src="getUrl"   /////src绑定后面的返回值
           （2）computed:{//计算属性
                 getUrl(){
                   return this.imgUrl[this.$route.path];
@@ -65,15 +71,15 @@ Vue.use(VueAwesomeSwiper)
                  "/details/car":require("../assets/images/1.png"),
                  "/details/hill":require("../assets/images/4.png")
                }
-    7. <ul>
+   8. <ul>
 					<!--相当于li标签，故需要tag="li"--><!--router-link路由跳转  相当于a标签-->
 					<!--active-class="active" 点击高亮--><!--:to相当于src-->
 					<!--:key="index"  严谨来些  作为-->
    <router-link active-class="active" :to="{path:'/details/'+nav.tag}" :key="index" tag="li" v-for="(nav,index) in detailsNav">
       {{ nav.title }}</router-link>
 				</ul>
-      8.redirect:"/details/earth",//重定向，默认打开第一个选中
-      9. v-bind指令用于设置HTML属性：v-bind:href  缩写为 :href
+     9.redirect:"/details/earth",//重定向，默认打开第一个选中
+      10. v-bind指令用于设置HTML属性：v-bind:href  缩写为 :href
          <a :href="{{url}}">aa</a>
 	 v-on 指令用于绑定HTML事件 ：v-on:click 缩写为 @click
 	 <a @click="get()">aa</a>
