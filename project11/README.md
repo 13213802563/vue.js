@@ -33,7 +33,7 @@ Vue.use(VueAwesomeSwiper)
           }
        }
  父传子：prop
-    父亲：<child :msg="message"></child>/////将父页面数据源msg传给子页面的message
+    父亲：<child v-bind:msg="message"></child>/////将父页面数据源msg传给子页面的message
     子：
          //第一种
           props:['msg']   //用对应的变量名接受对应的自定义属性的值
@@ -51,12 +51,48 @@ Vue.use(VueAwesomeSwiper)
                   }
              }
      5.使用vuex进行数据的传递：
-       A界面改变store中state里的参数： 
-         1、可以通过直接赋值的方法进行改变        this.$store.state.id =  (要传递的参数id)
-         2、官方建议的修改方法： this.$store.commit( 'setId' ，(要传递的参数id) )
-      B界面接收变化数据参数：this.$store.state.id
-        this.$store.dispatch("updateOrder",["counter",this.number])
-	
+      （1）store文件夹下的index.js：
+     	        import Vue from "vue"
+		import VueX from "vuex"
+		Vue.use(VueX)
+		export default new VueX.Store({
+			state:{
+				order:{
+					"counter":1,
+					"downmenu":1,
+					"radios":1
+				},
+			},
+
+			mutations:{
+				updateOrder(state,data){
+					state.order[data[0]] = data[1];
+				},
+			},
+			actions:{
+				updateOrder(context,data){
+					context.commit("updateOrder",data);
+				},
+			},
+			getters:{
+				getOrder(state){
+					return state.order ? state.order : {}
+				},
+			}
+
+		})
+     （2）子页面：
+          	methods:{
+		  mins(){
+		    this.$store.dispatch("updateOrder",["counter",this.number])
+		  }
+		}
+      （3）父页面：
+	 computed:{
+	   getOrder(){
+	      return this.$store.getters.getOrder;
+	    }
+	 }
         6.:class="{'active':index == nowIndex}"
           if（index == nowIndex）条件为真的时候执行active
        7.（1）:src="getUrl"   /////src绑定后面的返回值
