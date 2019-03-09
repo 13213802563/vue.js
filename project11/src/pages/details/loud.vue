@@ -1,19 +1,20 @@
 <template>
 	<div>
-	  loud
+		品牌营销
 	</div>
 </template>
-
 <script>
-	export default{
-		name:'loud',
-		data(){
-			return{
-				
-			}
+	
+export default{
+	name:"loud",
+	data(){
+		return{
+
 		}
 	}
-</script>
+}	
 
-<style scoped>
+</script>
+<style>
+	
 </style>
