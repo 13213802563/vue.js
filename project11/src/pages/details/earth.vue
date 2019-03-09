@@ -1,19 +1,22 @@
 <template>
 	<div>
-		earth
+		开放产品：{{ getOrder }}
 	</div>
 </template>
 
 <script>
 	export default{
-		name:'earth',
+		name:"earth",
 		data(){
-			return{
-				
+			return{}
+		},
+		computed:{
+			getOrder(){
+				return this.$store.getters.getOrder
 			}
 		}
 	}
 </script>
 
-<style scoped>
+<style>
 </style>
