@@ -4,6 +4,8 @@ vuex的安装：npm install vuex --save
         import Vue from 'vue'
 	import Vuex from 'vuex'
 	Vue.use(Vuex)
+Vue-resource的安装：npm install --save vue-resource
+main.js   import VueResource  from 'vue-resource'
 安装所有插件：npm  install
 
 2.vue的安装：
