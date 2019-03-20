@@ -95,6 +95,16 @@ Vue.use(VueAwesomeSwiper)
 	      return this.$store.getters.getOrder;
 	    }
 	 }
+	 methods: {
+	  //删除购物车数据，执行store中的delCarPanelData
+            delCarPanelHandle (id) {
+	      this.$store.commit('delCarPanelData',id)
+	    }
+	 }
+	 总结：1.store中 state的值，getters中的值，在父亲页面都是在computed中return获取到值，在页面中进行相应的处理，像v-show="carShow"。
+	      2.store中 mutations中的方法，在父页面中都是在methods中通过this.$store.commit(方法名，所需参数)，@mouseleave="hideCarHandle"
+	       
+	 
         6.:class="{'active':index == nowIndex}"
           if（index == nowIndex）条件为真的时候执行active
        7.（1）:src="getUrl"   /////src绑定后面的返回值
