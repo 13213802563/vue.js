@@ -4,7 +4,8 @@ import Vuex from 'Vuex'
 Vue.use(Vuex)
 
 let store = new Vuex.Store({
-  state: {
+state: {
+	  //定义加入购物车的数组
     carPanelData: [],
     receiveInfo: [{
       'name': '王某某',
@@ -37,27 +38,33 @@ let store = new Vuex.Store({
     }],
     provisionalOrder: [],
     orderData: [],
+    //默认限制弹窗不打开
     maxOff: false,
+    //购物车初始不打开
     carShow: false,
+    //小球的信息（展示，哪个按钮，图片地址）
     ball: {
       show: false,
       el: null,
       img: ''
     }
-  },
-  getters: {
+},
+
+getters: {
+	//得到购物中的数量
     totleCount (state) {
       let count = 0
       state.carPanelData.forEach((goods) => {
         count += goods.count;
       })
-  	  return count
-  	},
-  	totlePrice (state) {
-  	  let total = 0
-  	  state.carPanelData.forEach((goods) => {
-  	    total += goods.price * goods.count
-  	  })
+	  return count
+	},
+	//得到购物中的价格
+	totlePrice (state) {
+	  let total = 0
+	  state.carPanelData.forEach((goods) => {
+	    total += goods.price * goods.count
+	  })
       return total
     },
     checkedCount (state) {
@@ -94,6 +101,7 @@ let store = new Vuex.Store({
       })
       return allChecked
     },
+    //取得最大的限制值  和shop.vue中computed
     maxCount (state) {
       let maxOff = false
       state.carPanelData.forEach((goods) => {
@@ -103,37 +111,47 @@ let store = new Vuex.Store({
       })
       return maxOff
     }
-  },
-  mutations: {
-  	addCarPanelData (state,data) {
-  	  let bOff = true
-  	  state.carPanelData.forEach((goods) => {
-  	    if(goods.sku_id === data[0].sku_id){
-  	      goods.count += data[1]
-  	      if(goods.count>goods.limit_num){
-  	        goods.count -= data[1]
-  	        state.maxOff = true
-  	        bOff = false
-  	        return
-  	      }
+},
+mutations: {
+	//加入购物车的方法   对应shop-item.vue下的methods
+	addCarPanelData (state,data) {
+//	  标识符  用来判断购物车中是否存在相同商品，true表示没有，false表示有商品
+	  let bOff = true
+	  state.carPanelData.forEach((goods) => {
+	  	//当购物车中存在相同物品时，增加数量
+	    if(goods.sku_id === data[0].sku_id){
+	      goods.count += data[1]
+      //最大值的判断和处理
+	      if(goods.count>goods.limit_num){
+	        goods.count -= data[1]
+	        state.maxOff = true
+	        bOff = false
+	        return
+	      }
+	      //相同未到最大，小球飞入
+	      //得到点击的按钮，event.path一级级向上查找
           state.ball.el = event.path[0]
+//        小球显示
           state.ball.show = true
+          //图片地址
           state.ball.img = data[0].ali_image
-  	      bOff = false
-  	      state.carShow = true
-  	    }
-  	  })
-  	  if(bOff){
-  	    let goodsData = data[0]
-  	    Vue.set(goodsData,'count',data[1])
-  	    Vue.set(goodsData,'checked',true)
-  	    state.carPanelData.push(goodsData)
-  	    state.carShow = true
+	      bOff = false
+	      state.carShow = true
+	    }
+	  })
+	  //如果购物车中不存在  直接将当前数据加入购物车，count=1
+	  if(bOff){
+	    let goodsData = data[0]
+	    Vue.set(goodsData,'count',data[1])
+	    Vue.set(goodsData,'checked',true)
+	    state.carPanelData.push(goodsData)
+	    //最大值的限制
+	    state.carShow = true
         state.ball.el = event.path[0]
         state.ball.show = true
         state.ball.img = data[0].ali_image
-  	  }
-  	},
+	  }
+	},
     plusCarPanelData (state,id) {
       state.carPanelData.forEach((goods,index) => {
         if(goods.sku_id === id){
@@ -143,23 +161,24 @@ let store = new Vuex.Store({
         }
       })
     },
-  	subCarPanelData (state,id) {
-  	  state.carPanelData.forEach((goods,index) => {
+	subCarPanelData (state,id) {
+	  state.carPanelData.forEach((goods,index) => {
         if(goods.sku_id === id){
           if(goods.count === 1) return
           goods.count --
           return
         }
       })
-  	},
-  	delCarPanelData (state,id) {
-  	  state.carPanelData.forEach((goods,index) => {
+	},
+	//删除购物车中的列表    对应car-panel.vue中的methods
+	delCarPanelData (state,id) {
+	  state.carPanelData.forEach((goods,index) => {
         if(goods.sku_id === id){
           state.carPanelData.splice(index,1)
           return
         }
       })
-  	},
+	},
     checkGoods (state,id) {
       state.carPanelData.forEach((goods,index) => {
         if(goods.sku_id === id){
@@ -209,6 +228,7 @@ let store = new Vuex.Store({
     alertPrompt (state) {
       state.maxOff = true
     },
+    //关闭达到最大时打开的弹窗   点击方法中的  对应prompt.vue中methods
     closePrompt (state) {
       state.maxOff = false
     },
@@ -247,7 +267,7 @@ let store = new Vuex.Store({
         state.receiveInfo[data[1]] = data[0]
       }
     }
-  }
+}
 })
 
 export default store
