@@ -21,7 +21,7 @@
       </div>
       
       <div class="item-btns clearfix">
-        <!--查看详情--><!--router-link 点击跳转到详情页面，name 和query-->
+        <!--查看详情--><!--router-link 点击跳转到详情页面，name 和query  是通过query来传递参数的-->
         <span class="item-gray-btn"><router-link :to="{name: 'Item', query: {itemId:item.sku_info[itemIndex].sku_id}}">查看详情</router-link> </span>
         <!--加入购物车--><!--@click="addCarPanelHandle()点击执行方法-->
         <span @click="addCarPanelHandle(item.sku_info[itemIndex])" class="item-blue-btn">加入购物车 </span>
@@ -30,8 +30,8 @@
       <div class="item-price clearfix">
         <i>¥</i><span>{{item.price}}</span>
       </div>
-      <div class="discount-icon">false</div>
-      
+       <div class="discount-icon">false</div>
+     <!--当点击整个封面的时候可以跳转-->
       <div class="item-cover">
         <router-link :to="{name: 'Item', query: {itemId:item.sku_info[itemIndex].sku_id}}"></router-link>
       </div>
