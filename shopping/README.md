@@ -25,3 +25,6 @@
      参考介绍：https://www.jianshu.com/p/a0143f46c575||https://www.gyzgl.com/jsnews/325.html||https://www.cnblogs.com/ccplus/p/8535987.html
  4.:data-index="index"  data-index动态获取索引值
  5.:class="{'active':index==itemIndex}  条件成立时active
+   :class="{'cur':color.id==$query.itemId}"   选中那个  那个显示
+ 6.总结：1.store中 state的值，getters中的值，在父亲页面都是在computed中return获取到值，在页面中进行相应的处理，像v-show="carShow"。
+	      2.store中 mutations中的方法，在父页面中都是在methods中通过this.$store.commit(方法名，所需参数)，@mouseleave="hideCarHandle"
