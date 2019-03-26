@@ -38,6 +38,7 @@
   state.ball.img = data[0].ali_image//相同未到最大，小球飞入
   8.Vue.set(goodsData,'count',data[1])
     Vue.set(goodsData,'checked',true)
+    总结：Vue.set( target, key, value )向响应式对象中添加一个属性，并确保这个新属性同样是响应式的，且触发视图更新。
   9.<!--全选   :class="{'checkbox-on':allChecked}获得computed中getter中计算的值-
       allChecked (state) {
 	      let allChecked = true
@@ -48,4 +49,7 @@
 		}
       })
       return allChecked
-    },
+    }
+10. cursor: not-allowed;不允许选中
+11.<!--v-show="!invoice.name" 没有内容时显示-->
+  <div class="verify-error" v-show="!invoice.name">必填</div>
