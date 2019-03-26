@@ -28,3 +28,24 @@
    :class="{'cur':color.id==$query.itemId}"   选中那个  那个显示
  6.总结：1.store中 state的值，getters中的值，在父亲页面都是在computed中return获取到值，在页面中进行相应的处理，像v-show="carShow"。
 	      2.store中 mutations中的方法，在父页面中都是在methods中通过this.$store.commit(方法名，所需参数)，@mouseleave="hideCarHandle"
+
+7.//相同未到最大，小球飞入
+ //得到点击的按钮，event.path一级级向上查找
+  state.ball.el = event.path[0]
+ // 小球显示
+  state.ball.show = true
+  //图片地址
+  state.ball.img = data[0].ali_image//相同未到最大，小球飞入
+  8.Vue.set(goodsData,'count',data[1])
+    Vue.set(goodsData,'checked',true)
+  9.<!--全选   :class="{'checkbox-on':allChecked}获得computed中getter中计算的值-
+      allChecked (state) {
+	      let allChecked = true
+	      state.carPanelData.forEach((goods) => {
+		if(!goods.checked){
+		  allChecked = false
+		  return
+		}
+      })
+      return allChecked
+    },
