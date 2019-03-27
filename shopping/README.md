@@ -56,4 +56,10 @@
 12.let province = this.addList.filter((province) => {
        return province.area_id == this.oldReceive.provinceId
     })[0]
-    总结：过滤事件，最后[0]时为了取到第一个值
+    this.cityList = province.city_list
+    总结：过滤相同id的数组，最后[0]时为了取到第一个值
+     this.$store.state.receiveInfo.unshift(this.$store.state.receiveInfo.splice(index,1)[0])//将删除的状态字段取出加入到开头
+  13. created () {}//用来在一个实例被创建之后执行代码（选中）
+     watch：{}  实时监测信息的变化
+  14.@click="checkedInvoice(true)"一个方法控制两个点击事件
+  15.this.$router.push({name: 'Payment', query: {orderId:data.orderId}})   跳转到指定页面
