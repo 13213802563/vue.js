@@ -53,3 +53,7 @@
 10. cursor: not-allowed;不允许选中
 11.<!--v-show="!invoice.name" 没有内容时显示-->
   <div class="verify-error" v-show="!invoice.name">必填</div>
+12.let province = this.addList.filter((province) => {
+       return province.area_id == this.oldReceive.provinceId
+    })[0]
+    总结：过滤事件，最后[0]时为了取到第一个值
