@@ -1,0 +1,149 @@
+一.路由的预加载：
+{
+   path：'/about',
+   component:()=>import('@/views/About.vue')
+}
+二：router-link路由的传参（参考：https://blog.csdn.net/qq_33599109/article/details/78968066）
+(1)1.router-link传参方式(params和query传送参数同样是key:value形式传递，但query是通过url来传递参数。)
+     <router-link  :to="{ name='home' }"> Home </router-link>
+     <router-link
+        :to="{
+            path: 'yourPath',     //要跳转的路径
+            params: {        //要传的参数
+                name: 'name',
+                dataObj: data   
+            },
+            query: {
+                name: 'name',
+                dataObj: data
+            }
+        }"
+    >
+   2.$router方式传参
+	   路由中 router： {
+	      path:'/argu/:name',
+	      component:()=>import('@/views/argu.vue')
+	    }
+	   子页面：{{ $route.params.name }}   
+
+(2)params和query(详见：https://www.cnblogs.com/beka/p/8583924.html)
+  区别: 用params传参，F5强制刷新参数会被清空，用query，由于参数适用路径传参的所以F5强制刷新也不会被清空。（传参强烈建议适用string）
+ 用法：params(query页2中将 params换为query，将3中params换为query)
+     1：配置路径rutes：   路径中一定要加name
+     2.传递参数：用$router：方法中写入（name一样）<!-- test-vue-router页面 -->
+      this.$router.push({
+         name: `TestVueRouterTo`,
+         params: {
+          page: '1', code: '8989'
+         }
+      })
+     3：接受参数：用$route，少个r,注意啦   <!-- test-vue-router-to页面 -->
+	     data() {
+		    return {
+		      page: '',
+		      code: ''
+		    }
+		  },
+          created() {
+		    this.getRouterData()
+		  },
+		  methods: {
+		    getRouterData() {
+		      this.page = this.$route.params.page
+		      this.code = this.$route.params.code
+		    }
+		  },
+		   watch: {
+	            //监测路由变化，只要变化了就调用获取路由参数
+	            '$route': 'getRouterData'
+	        }
+三：嵌套路由：children中path中不需要/
+    {
+      path:'/parent',
+      component:()=>import('@/views/parent.vue'),
+      children:[
+         {
+           path:'child',
+           component:() =>import('')
+         }
+      ]
+    }
+四：router-view 路由视图
+  App.Vue中： <router-view  name="email"/>
+           <router-view  name="tel"/>
+  router.js:{
+             path:'/name_view',
+             components:{
+               default:() =>import(''),
+               email:() =>import(''),
+               tel:() =>import('')
+             }
+          }
+五：重定向路由：{
+                path:'/main',
+                redirect:to =>{ return '/'}
+              }
+六：路由页面跳回：<button  @click="handleClick('back')">返回上一页<button>
+               methods:{
+                  handleClick(type){
+                    if(type==='back') this.$router.back()
+                    else if(type==='push') this.$router.push({ name:'argu',params:{name:'lison'} })
+                    else if(type==='replace') this.$router.replace({name:'parent'})
+                  }
+               }
+七：路由之间的传值：
+ {
+    path:'/',
+    alias:'/home_page',
+    component:Home,
+   props:route =>({ food:route.query.food })   route.js中
+ }
+  props:{food:{type:String,default:'apple'}}    Home.js中
+八：路由中的mode：（在Router中加载）
+   mode:'hash'    有#，加载时刷新
+   mode:'history'  没有# ，加载时不实时刷新(不存在地址时候会报错)
+   解决办法是：{
+             path:"*",
+             component:() =>import('');
+           }
+九：钩子问题：在vue中，实例选项和钩子函数和{{}}表达式都是不需要手动调用就可以直接执行的。
+  在页面首次加载执行顺序有如下：
+
+beforeCreate                //在实例初始化之后、创建之前执行
+created                         //实例创建后执行
+beforeMounted             //在挂载开始之前调用
+filters      //挂载前加载过滤器
+computed                     //计算属性
+directives-bind              //只调用一次，在指令第一次绑定到元素时调用
+directives-inserted        //被绑定元素插入父节点时调用
+activated                       //keek-alive组件被激活时调用，则在keep-alive包裹的嵌套的子组件中触发
+mounted     //挂载完成后调用
+
+{{}}                                //mustache表达式渲染页面
+
+
+
+修改页面input时，被自动调用的选项顺序如下：
+watch                           //首先先监听到了改变事件
+filters     //过滤器没有添加在该input元素上，但是也被调用了
+beforeUpdate              //数据更新时调用，发生在虚拟dom打补丁前
+directived-update        //指令所在的组件的vNode更新时调用，但可能发生在其子vNode更新前
+directives-componentUpdated//指令所在的组件的vNode及其子组件的vNode全部更新后调用
+updated                      //组件dom已经更新
+
+
+
+组件销毁时，执行顺序如下
+beforeDestroy            //实例销毁之前调用
+directives-unbind       //指令与元素解绑时调用，只调用一次
+deactivated                //keep-alive组件停用时调用
+destroyed                  //实例销毁之后调用
+--------------------- 
+作者：云_飞扬 
+来源：CSDN 
+原文：https://blog.csdn.net/qq_38627581/article/details/79385556 
+版权声明：本文为博主原创文章，转载请附上博文链接！
+   
+    
+      
+    
