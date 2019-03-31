@@ -21,7 +21,7 @@
     >
    2.$router方式传参
 	   路由中 router： {
-	      path:'/argu/:name',
+	      path:'/argu/:name?/:userId?',//当有？存在时，意思是name可存在也可不存在
 	      component:()=>import('@/views/argu.vue')
 	    }
 	   子页面：{{ $route.params.name }}   
@@ -57,7 +57,7 @@
 	            //监测路由变化，只要变化了就调用获取路由参数
 	            '$route': 'getRouterData'
 	        }
-三：嵌套路由：children中path中不需要/
+三：嵌套路由：children中((path中不需要/))
     {
       path:'/parent',
       component:()=>import('@/views/parent.vue'),
@@ -69,8 +69,21 @@
       ]
     }
 四：router-view 路由视图
-  App.Vue中： <router-view  name="email"/>
-           <router-view  name="tel"/>
+  App.Vue中：
+        <transition-group  name="router"> 
+           <router-view  key="email"  name="email"/>
+           <router-view  key="tel"  name="tel"/>
+          <transition-group>
+            基于路由的切换动态过渡 (当路由中传入?id时，this.routerTransition=to.query.transitinName进而进行过滤的变化）
+   <transition :name="routerTransition">
+      <router-view></router-view>
+   </transition>
+  <script>
+     export default{
+       data(){return{routerTransition:''}}
+       watch:{'$route'(to){to.query&&to.query.transitionName&&(this.routerTransition=to.query.transitinName)}}
+     }
+  </script>
   router.js:{
              path:'/name_view',
              components:{
@@ -79,10 +92,8 @@
                tel:() =>import('')
              }
           }
-五：重定向路由：{
-                path:'/main',
-                redirect:to =>{ return '/'}
-              }
+五：重定向路由：  // 方法接收 目标路由 作为参数      // return 重定向的 字符串路径/路径对象
+     { path:'/main', redirect:to =>{ return '/'} }
 六：路由页面跳回：<button  @click="handleClick('back')">返回上一页<button>
                methods:{
                   handleClick(type){
@@ -91,14 +102,22 @@
                     else if(type==='replace') this.$router.replace({name:'parent'})
                   }
                }
-七：路由之间的传值：
- {
-    path:'/',
-    alias:'/home_page',
-    component:Home,
-   props:route =>({ food:route.query.food })   route.js中
- }
-  props:{food:{type:String,default:'apple'}}    Home.js中
+七：路由之间的传值：（网址参考：https://blog.csdn.net/mapbar_front/article/details/79362602）
+      { path:'/main/:id',component:Main }     //Main.js  console.log(this.$route.params.id);//123
+（1）1.props传递——布尔模式
+                如果 props 被设置为 true，route.params 将会被设置为组件属性。{ path:'/main/:id',component:Main, props: true }
+               在Main.js中：console.log(this.id); 
+    2.props传递——对象模式
+               对象模式是在路由配置的props属性中，是一个对象。{ path:'/login', component:Login, props: { userName: 'mapbar_front'} }
+               在Main.js中，我们可以这样使用：   props:['userName'],created:function(){ console.log(this.userName);}  
+    3.props传递——函数模式
+               函数模式的路由配置中，props属性是函数，这个函数返回一个对象。这个对象中的key，就是将要传递给Main组件的props。
+      { path:'/login', component:Login, props: ()=>{  return{ userName:'mapbar_front',age: 26}}}
+              这样在Main.js中，也可以获取userName属性和age属性。     
+（2） { path:'/',alias:'/home_page',component:Home,props:route =>({ food:route.query.foo })   route.js中}
+     props:{foo:{type:String,default:'apple'}}    Home.js中
+    解析：URL /?foo=vue 会将 {food: 'vue'} 作为属性传递给 Home 组件。
+
 八：路由中的mode：（在Router中加载）
    mode:'hash'    有#，加载时刷新
    mode:'history'  没有# ，加载时不实时刷新(不存在地址时候会报错)
@@ -106,44 +125,201 @@
              path:"*",
              component:() =>import('');
            }
-九：钩子问题：在vue中，实例选项和钩子函数和{{}}表达式都是不需要手动调用就可以直接执行的。
+ 九：(1)const router = new  Router({routes})
+      export default router
+    (2)export default new Router({  routes:[{ }]   })
+十：钩子问题：在vue中，实例选项和钩子函数和{{}}表达式都是不需要手动调用就可以直接执行的。
   在页面首次加载执行顺序有如下：
-
-beforeCreate                //在实例初始化之后、创建之前执行
-created                         //实例创建后执行
-beforeMounted             //在挂载开始之前调用
-filters      //挂载前加载过滤器
-computed                     //计算属性
-directives-bind              //只调用一次，在指令第一次绑定到元素时调用
-directives-inserted        //被绑定元素插入父节点时调用
-activated                       //keek-alive组件被激活时调用，则在keep-alive包裹的嵌套的子组件中触发
-mounted     //挂载完成后调用
-
-{{}}                                //mustache表达式渲染页面
-
-
-
+	beforeCreate                //在实例初始化之后、创建之前执行
+	created                         //实例创建后执行
+	beforeMounted             //在挂载开始之前调用
+	filters      //挂载前加载过滤器
+	computed                     //计算属性
+	directives-bind              //只调用一次，在指令第一次绑定到元素时调用
+	directives-inserted        //被绑定元素插入父节点时调用
+	activated                       //keek-alive组件被激活时调用，则在keep-alive包裹的嵌套的子组件中触发
+	mounted     //挂载完成后调用	
+	{{}}                                //mustache表达式渲染页面
 修改页面input时，被自动调用的选项顺序如下：
-watch                           //首先先监听到了改变事件
-filters     //过滤器没有添加在该input元素上，但是也被调用了
-beforeUpdate              //数据更新时调用，发生在虚拟dom打补丁前
-directived-update        //指令所在的组件的vNode更新时调用，但可能发生在其子vNode更新前
-directives-componentUpdated//指令所在的组件的vNode及其子组件的vNode全部更新后调用
-updated                      //组件dom已经更新
-
-
+	watch                           //首先先监听到了改变事件
+	filters     //过滤器没有添加在该input元素上，但是也被调用了
+	beforeUpdate              //数据更新时调用，发生在虚拟dom打补丁前
+	directived-update        //指令所在的组件的vNode更新时调用，但可能发生在其子vNode更新前
+	directives-componentUpdated//指令所在的组件的vNode及其子组件的vNode全部更新后调用
+	updated                      //组件dom已经更新
 
 组件销毁时，执行顺序如下
-beforeDestroy            //实例销毁之前调用
-directives-unbind       //指令与元素解绑时调用，只调用一次
-deactivated                //keep-alive组件停用时调用
-destroyed                  //实例销毁之后调用
---------------------- 
-作者：云_飞扬 
-来源：CSDN 
-原文：https://blog.csdn.net/qq_38627581/article/details/79385556 
-版权声明：本文为博主原创文章，转载请附上博文链接！
-   
-    
-      
-    
+	beforeDestroy            //实例销毁之前调用
+	directives-unbind       //指令与元素解绑时调用，只调用一次
+	deactivated                //keep-alive组件停用时调用
+	destroyed                  //实例销毁之后调用
+十、导航守卫
+（1）完整的导航解析流程：
+	1.导航被触发。
+	2.在失活的组件里调用离开守卫。
+	3.调用全局的beforeEach守卫。
+	4.在重用的组件里调用的beforeRouteUpdate守卫。
+	5.在路由配置里调用beforeEnter。
+	6.解析异步路由组件。
+	7.在被激活的组件里调用beforeRouteEnter.
+	8.调用全局的beforeResolve守卫。
+	9.导航被确认。
+	10.调用全局的afterEach钩子。
+	11.触发DOM更新。
+	12.用创建好的实例调用beforeRouteEnter守卫中传给next的回调函数。
+(2)例子：1.beforeEach  全局前置守卫     AfterEach  全局后置钩子
+	    //router.beforeEach
+		const HAS_LOGINED=true;
+		router.beforeEach((to,from,next)=>{
+		   to.meta&&setTitle(to.meta.title);
+		   if(to.name!=='login'){
+		     if(HAS_LOGINED)  next();
+		     else next({name:'login'})
+		   }else{
+		     if(HAS_LOGINED)  next({name:'home'})
+		     else next()
+		   } 
+		})
+	  //全局后置钩子
+		router.afterEach((to,from)=>{
+		   //logining=false;
+		})
+	2.路由独享的守卫  beforeEnter
+		 routes: [
+	    {
+	      path: '/foo',
+	      component: Foo,
+		  beforeEnter:((to,from,next)=>{
+			  if(from.name==='about') alert("这是从about来的")
+			  else  alert("这不是从about来的")
+			  next();
+		 })
+		}]
+	3.组件内的守卫beforeRouteEnter,beforeRouteUpdate,beforeRouteLeave
+   Home.vue中  beforeRouteEnter(to,from,next){////此时刚进来，还没有this，但可以通过传参vm获得, beforeRouteEnter 是支持给 next 传递回调的唯一守卫
+                next(vm =>{console.log(vm) })
+             },
+             beforeRouteLeave(to,from,next){
+               const leave=confirm('您确定要离开吗？')
+               if(leave) next();
+               else next(false)
+             }，
+             beforeRouterUpdate(to,from,next){
+               console.log(to.name,from.name)
+             }
+十一、路由元：meta	（参考：https://blog.csdn.net/cofecode/article/details/79181894和https://blog.csdn.net/zjscy666/article/details/74115285）
+注意：to.meta&&setTitle(to.mata.title)如果to.meta存在执行，下一步的setTitle，否则不执行
+直接在路由配置的时候，给每个路由添加一个自定义的meta对象，在meta对象中可以设置一些状态，来进行一些操作。用它来做登录校验再合适不过了
+{
+  path: '/actile',
+  name: 'Actile',
+  component: Actile,
+  meta: {
+    login_require: false
+  },
+},
+{
+  path: '/goodslist',
+  name: 'goodslist',
+  component: Goodslist,
+  meta: {
+    login_require: true
+  },
+  children:[
+    {
+      path: 'online',
+      component: GoodslistOnline
+    }
+  ]
+} 
+这里我们只需要判断item下面的meta对象中的login_require是不是true，就可以做一些限制了   
+ router.beforeEach((to, from, next) => {
+  if (to.matched.some(function (item) {
+    return item.meta.login_require
+  })) {
+    next('/login')
+  } else 
+    next()
+})     
+十二：滚动行为
+ scrollBehavior (to, from, savedPosition) {
+    // return 期望滚动到哪个的位置
+  }
+ //scrollBehavior 方法接收 to 和 from 路由对象。第三个参数 savedPosition 当且仅当 popstate 导航 (通过浏览器的 前进/后退 按钮触发) 时才可用。
+ 如果你要模拟“滚动到锚点”的行为：:to={path:'/dcument#abc'}  哈希值
+scrollBehavior (to, from, savedPosition) {
+  if (to.hash) {
+    return {
+      selector: to.hash
+    }
+  }
+}
+十三  (1).父子页面的传递和V-model
+v-model="inputValue" 相当于@input='handleInput'  :value="inputValue"  store.vue
+eg(父页面原本)：
+    <template><div><a-input :value="inputValue"  @input="handleInput"></a-input></div></template>
+	import Ainput from  "../"
+	export default{
+	   name:'store',
+	   data(){
+	     return{inputValue:""}
+	   },
+	   components:{AInput},
+	   methods:{handleInput(val){this.inputValue = val}}
+	}
+eg(父页面v-model)：
+     <template><div><a-input v-model='inputValue'></a-input></div></template>
+	import Ainput from  "../"
+	export default{
+	   name:'store',
+	   data(){
+	     return{inputValue:""}
+	   },
+	   components:{AInput},
+	}
+eg(子页面)
+    <template><input @input="handleInput"  :value="value"></template>
+	export default{
+	   name:'AInput',
+       props:{value:{type:[String,Number],default:''}};
+       methods:{handleInput(event){const value=event.target.value;this.$emit('input',value)}}
+	}
+(2).兄弟页面之间的传递(一兄弟先把页面传给父亲页面，另一页面再从父页面中获取)例如：select中包括list和selectInput，下部兄弟list页面点击发送给上部selectInput页面的input框中
+（1.title:''定义   传给selectInput（父亲传selectInput）,然后定义父亲点击事件；2.子兄list通过自身点击事件this.$emit('changeTitle',title) 子传父亲  ）
+
+list.vue中：<template><ul class="list"><li v-for="item in data"   @click="getTitleHandle(item.title)">{{item.title}}</ul></template>
+             <script>export default{
+                   props:["data"],//父亲传给儿子
+                   methods:{ getTitleHandle(title){ this.$emit('changeTitle',title) } };///点击获得title值，传给父页面
+             }</script> 
+父页面select.vue中：
+       <list   :data="listData"  @changeTitle="titleHandle(title)"/>// 3
+       <selectInput :title="title"  />
+       
+       export default{
+         data(){return{listData:listData,title:''}},//title:''定义  传给selectInput（父亲传儿子）
+
+         methods:{titleHandle(title){this.title=title}};//父页面得到传过来的值
+       }
+selectInput中：<template><input @click="showListHandle"  :value="title"/></template>///:value="title"（父亲传儿子）
+		<script>export default{
+			    props:['title'],//拿到title
+		}</script>
+十四、 Vue 实例实现了一个事件分发接口，你可以通过实例化一个空的 Vue 实例来实现这个目的。
+这个集中式的事件中间件就是 Bus。(参考：https://www.cnblogs.com/fanlinqiang/p/7756566.html)
+	import Vue from 'vue'	
+	import Bus from './bus';
+	vue.config.productionTip=false;
+	Vue.prototype.$bus=Bus;
+	export default  new Vue({
+	   router,
+	   render:h=>h(App)
+	}).$mount("#app")
+	
+	mounted () {
+	    this.bus.$on('updateData', mes=>this.getdata=mes);
+	}
+	this.bus.$emit('updateData', {loading: false});
+	beforeDestroy () {
+        this.bus.$off('updateData', this.getData);
+    }
