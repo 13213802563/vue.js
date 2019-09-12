@@ -1,0 +1,27 @@
+.g-new_lessons .m-input_item {
+  width: 350px;
+  display: flex;
+  line-height: 40px;
+  margin-top: 15px; }
+  .g-new_lessons .m-input_item span.m-title {
+    vertical-align: center; }
+    .g-new_lessons .m-input_item span.m-title i.f-must {
+      color: #f00 !important; }
+    .g-new_lessons .m-input_item span.m-title i.f-default {
+      visibility: hidden; }
+  .g-new_lessons .m-input_item .el-input, .g-new_lessons .m-input_item .el-date-editor {
+    flex: 1; }
+.g-new_lessons .m-file_item {
+  display: flex;
+  line-height: 40px;
+  margin-top: 15px; }
+  .g-new_lessons .m-file_item span.m-title {
+    vertical-align: center; }
+    .g-new_lessons .m-file_item span.m-title i.f-must {
+      color: #f00 !important; }
+    .g-new_lessons .m-file_item span.m-title i.f-default {
+      visibility: hidden; }
+  .g-new_lessons .m-file_item .el-input, .g-new_lessons .m-file_item .el-date-editor, .g-new_lessons .m-file_item .upload-demo {
+    flex: 1; }
+
+/*# sourceMappingURL=index.css.map */

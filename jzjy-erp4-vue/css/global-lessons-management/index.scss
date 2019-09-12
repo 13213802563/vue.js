@@ -1,0 +1,46 @@
+.g-new_lessons {
+  .m-input_item {
+    width: 350px;
+    display: flex;
+    line-height: 40px;
+    margin-top: 15px;
+
+    span.m-title {
+      vertical-align: center;
+
+      i.f-must {
+        color: #f00!important;
+      }
+
+      i.f-default {
+        visibility: hidden;
+      }
+    }
+
+    .el-input,.el-date-editor{
+      flex: 1;
+    }
+  }
+
+  .m-file_item {
+    display: flex;
+    line-height: 40px;
+    margin-top: 15px;
+
+    span.m-title {
+      vertical-align: center;
+
+      i.f-must {
+        color: #f00!important;
+      }
+
+      i.f-default {
+        visibility: hidden;
+      }
+    }
+
+    .el-input,.el-date-editor,.upload-demo{
+      flex: 1;
+    }
+  }
+}

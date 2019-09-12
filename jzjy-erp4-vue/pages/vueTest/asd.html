@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app" style="background: #fff">
+    <template v-for="item in haha">
+        <p>我是{{item}}</p>
+    </template>
+    <el-button type="primary">汪2222世博</el-button>
+    <el-date-picker
+            v-model="value2"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right">
+    </el-date-picker>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            haha:[1,2,3,4,5,6,7,8],
+            value2:''
+        },
+        mounted(){
+            const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading', b
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            setTimeout(() => {
+                loading.close();
+            }, 6000);
+        }
+
+    })
+</script>
+</body>
+</html>

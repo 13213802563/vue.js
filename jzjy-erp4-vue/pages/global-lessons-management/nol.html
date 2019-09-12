@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div id="canlender">
+
+    </div>
+</body>
+<script>
+    let app = new Vue({
+        el: '#canlender',
+        data: {
+
+        },
+        create:{
+            txt_name:''
+        },
+        created:function(){
+            this.txt_name = text;
+        },
+        methods: {
+            init:function(){
+                // 计算年月日周
+                var date = new Date();
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                var week = date.getDay() == 0 ? 7 : date.getDay();
+
+                var stringNowDate = timestampToTime(new Date().getTime())
+                //六个月之前的时间
+                var startTime1 = Month(-6);
+                var startYear = parseInt((startTime1.split('-'))[0]);
+                // 六个月之后的时间
+                var endTime = Month(6);
+                var endYear = parseInt((endTime.split('-'))[0]);
+
+                // 渲染年份
+                var yearHtml = '';
+                if (startYear !== year && startYear !== endYear) {
+                    yearHtml = '<option  data-year="' + startYear + '">' + startYear + '</option>';
+                } else if (endYear !== year && startYear !== endYear) {
+                    yearHtml = '<option  data-year="' + endYear + '">' + endYear + '</option>';
+                }
+                $(".cal-year").append('<option  id="year' + year + '"  data-year="' + year + '">' + year + '</option>' + yearHtml);
+
+                //渲染月份
+                var monthArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+                var monthHtml = '';
+                monthArray.forEach((item, index) => {
+                    if (month === item) {
+                        monthHtml = '<option  id="month' + (index + 1) + '"  data-month="' + (index + 1) + '"   selected>' + item + '</option>';
+                        $(".cal-month").append(monthHtml);
+                    } else {
+                        monthHtml = '<option  id="month' + (index + 1) + '" data-month="' + (index + 1) + '">' + item + '</option>';
+                        $(".cal-month").append(monthHtml);
+                    }
+                });
+                // 渲染当月有几天
+                var nowdaylength = calander(year, month);
+                renderDay(nowdaylength, year, month);
+                $(".tcontent").children('td').eq(day - 1).trigger('click');
+                clickDay();
+            },
+            getLastMonth:function(num){
+                //计算上个月是几月
+                return num === 1 ? 12 : num - 1;
+            },
+            getNextMonth:function(num){
+                //计算下个月是几月
+                return num === 12 ? 1 : num + 1;
+            },
+            getWeekDay:function(year, month, day){
+                //看是周几
+                var weekday = new Date(year + '/' + month + '/' + day).getDay();
+                return weekday === 0 ? 7 : weekday;
+            },
+            calfill:function(year, month){
+                if (typeof (year) === "string") {
+                    year = parseInt(year);
+                }
+                if (typeof (month) === "string") {
+                    month = parseInt(month)
+                }
+                //计算上个月多少天
+                var lastMonthCount = calander(year, getLastMonth(month));
+                //计算空格子数量
+                let startCount = getWeekDay(year, month, 1)-1;
+                //计算上个月天数 减去 空格子数量 得出差值
+                let difValueLast = lastMonthCount - startCount;
+                //上个月天数生成数组
+                var lastFullMonthDays = [];
+                for (var i = 1; i <= lastMonthCount; i++) {
+                    lastFullMonthDays.push(i)
+                }
+                //取 差值到数组尾的所有元素
+                var needToStart = lastFullMonthDays.slice(difValueLast);
+                //填入前面空格子
+                var beforeHtml = '';
+                for (let i = 0; i < needToStart.length; i++) {
+                    ////////////////////
+                    beforeHtml += '<td  class="nodays"  data-day="' + needToStart[i] + '"></td>';
+                    // beforeHtml += '<td  class="nodays"  data-day="' + needToStart[i] + '">' + needToStart[i] + '</td>';
+                }
+                $(".tcontent").prepend(beforeHtml);
+
+                //计算下个月多少天
+                var nextMonthCount = calander(year, getNextMonth(month));
+                //计算后面空的格子的数量
+                var endCount = 42 - calander(year, month) - (getWeekDay(year, month, 1) - 1);
+                //下个月天数生成数组
+                var arrDay = [];
+                for (var i = 1; i <= nextMonthCount; i++) {
+                    arrDay.push(i)
+                }
+                ;
+                //取 差值到数组尾的所有元素
+                var needToEnd = arrDay.slice(0, endCount);
+                //计算后面空了几个格子
+                // var phhtml = '';
+                // for (var i = 0; i < needToEnd.length; i++) {
+                //     phhtml += '<td class="nodays"  data-day="' + needToEnd[i] + '"></td>';
+                //     // phhtml += '<td class="nodays"  data-day="' + needToEnd[i] + '">' + needToEnd[i] + '</td>';
+                // }
+                // $(".tcontent").append(phhtml);
+            }
+
+
+
+
+        },
+        watch: {}
+    })
+</script>
+</html>

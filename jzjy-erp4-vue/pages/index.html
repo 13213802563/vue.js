@@ -1,0 +1,107 @@
+<!DOCTYPE>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>家政家园-erp4</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../css/metisMenu.min.css" rel="stylesheet">
+    <!--表单验证 CSS-->
+    <link id="css" href="../css/sb-admin-2.css" rel="stylesheet" type="text/css" title="gray">
+    <!-- Custom Fonts -->
+    <link href="../css/awesome/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="../css/jzjy_common.css">
+<!--    需要引入的-->
+    <link rel="stylesheet" href="../css/vue-libs/index.css">
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" style="margin-bottom: 0">
+        <div class="logo">
+            <div style="color:yellow; margin-top:14px;margin-left:22px">
+                <h4>jzjy-erp4-vue</h4></div>
+        </div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="nick">
+            <span class="photo-span"></span>
+            <span id="nick-name"></span>丨
+            <span id="login-out">退出</span>
+            <div class="lon-out">
+                <button>确定</button>
+                <button>取消</button>
+            </div>
+        </div>
+
+        <div class="sidebar navbar-sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>测试页面<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="javascript:void(0)" onclick="loadHtml('vueTest/vue.test.html',this)">vue测试</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>运营管理<span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="javascript:void(0)" onclick="loadHtml('global-lessons-management/index.html',this)">国际课程管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <i class="glyphicon glyphicon-align-justify" id="open-button"></i>
+    </nav>
+
+    <div id="page-wrapper" class="page-wrapper">
+    </div>
+
+</div>
+<!--<script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+<script src="../js/vue-libs/vue.js"></script>
+<script src="../js/vue-libs/axios.min.js"></script>
+<script src="../js/vue-libs/qs.js"></script>
+
+<script src="../js/vue-libs/index.js"></script>
+<script type="text/javascript"
+        src="http://api.map.baidu.com/api?v=2.0&ak=tIqExiZw1IyBNAshjMWI1PT1DtIhOsuc&services=&t=20190622163250"></script>
+<script src="../js/jquery/jquery.min.js"></script>
+<script src="../js/bootstrap/bootstrap.min.js"></script>
+<script src="../js/metisMenu.min.js"></script>
+<script src="../js/sb-admin-2.js"></script>
+
+
+
+
+
+</body>
+
+</html>

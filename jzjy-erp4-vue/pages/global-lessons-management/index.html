@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>国际课程管理</title>
+    <style data-warn="do_not_delete_this">
+        /* 每页必须有的固定样式 @高长浩 2019年8月30日 14:28:02 */
+        #app {
+            padding-top: 15px;
+        }
+
+        .g-sub_control_btns {
+            margin-top: 15px;
+        }
+        .g-table_wrap {
+            margin-top: 15px;
+        }
+
+        .m-table_control {
+            color: #337ab7;
+        }
+        .g-pagination {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+    <link rel="stylesheet" href="/jzjy-erp4-vue/css/global-lessons-management/index.css">
+</head>
+<body>
+    <div id="app">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item>首页</el-breadcrumb-item>
+            <el-breadcrumb-item>运营管理</el-breadcrumb-item>
+            <el-breadcrumb-item>培训管理</el-breadcrumb-item>
+            <el-breadcrumb-item>国际课管理</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-row :gutter="24">
+            <el-col :span="24">
+                <el-collapse  v-model="queryCollapseActiveNames" >
+                    <!--这里可以写查询的input控件 @高长浩 2019年8月30日 15:11:17-->
+                    <el-collapse-item title="查询" name="query">
+                        <div class="m-item">
+                            <span class="el-input-span">所属分类：</span>
+                            <el-select v-model="tableParam.categoryCode" placeholder="请选择">
+                                <el-option
+                                        v-for="item in categoryData"
+                                        :key="item.categoryCode"
+                                        :label="item.courseCategory"
+                                        :value="item.categoryCode">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div class="m-item">
+                            <span class="el-input-span">上架状态：</span>
+                            <el-select v-model="tableParam.courseStatus" placeholder="请选择">
+                                <el-option
+                                        v-for="item in stackingStateData"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div class="m-item">
+                            <span class="el-input-span">课程名称：</span>
+                            <el-input  v-model="tableParam.courseName" placeholder="请输入课程名称"></el-input>
+                        </div>
+                        <div class="m-contorl">
+                            <el-button @click="resetQueryParams" type="primary">重置</el-button>
+                            <el-button @click="getTableData" type="primary">查询</el-button>
+                        </div>
+                    </el-collapse-item>
+                </el-collapse>
+            </el-col>
+
+            <!--这里可以写子功能按钮 @高长浩 2019年8月30日 15:35:14-->
+            <el-col :span="24" class="g-sub_control_btns">
+                <el-button type="primary" @click="openNewLessonModel">新增课程</el-button>
+            </el-col>
+
+            <!--表格 @高长浩 2019年8月30日 15:48:10-->
+            <el-col :span="24" class="g-table_wrap">
+                <el-table
+                        :data="tableData"
+                        border
+                        style="width: 100%"
+                        :header-cell-style="{background:'#484848',color:'#ffffff'}"
+                >
+                    <el-table-column
+                            type="index"
+                            label="序号"
+                            width="60"
+                            :resizable="false"
+                    >
+                        <template scope="scope">
+                            <span>{{(tableParam.curPage - 1) * tableParam.pageCount + scope.$index + 1}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column
+                            prop="courseName"
+                            label="课程名称"
+                            :resizable="false"
+                            min-width="200"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="courseCategory"
+                            label="所属分类"
+                            width="120"
+                            :resizable="false"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="coursePrice"
+                            label="课程原价(元)"
+                            width="120"
+                            :resizable="false"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="discountedPrices"
+                            label="优惠价格(元)"
+                            width="120"
+                            :resizable="false"
+                           >
+                    </el-table-column>
+                    <el-table-column
+                            prop="courseDuration"
+                            label="课程时长(天)"
+                            width="120"
+                            :resizable="false"
+                            >
+
+                    </el-table-column>
+                    <el-table-column
+                            prop="totalTime"
+                            label="上课时间"
+                            width="200"
+                            :resizable="false"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="address"
+                            label="地点"
+                            width="120"
+                            :resizable="false"
+
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="courseStatusName"
+                            label="上架状态"
+                            width="100"
+                            :resizable="false"
+                    >
+                    </el-table-column>
+
+                    <el-table-column
+                            fixed="right"
+                            label="操作"
+                            width="150"
+                            :resizable="false"
+                           >
+                        <template slot-scope="scope" >
+                            <el-button @click.native.prevent="openEditLessonModel(scope.$index, tableData)" type="text" size="small" class="m-table_control">编辑</el-button>
+                            <template>
+                                <el-button @click.native.prevent="changeState('1',tableData[scope.$index].id)" v-if="tableData[scope.$index].courseStatusName === '上架'" type="text" size="small" class="m-table_control">下架</el-button>
+                                <el-button @click.native.prevent="changeState('2',tableData[scope.$index].id)" v-if="tableData[scope.$index].courseStatusName === '下架'" type="text" size="small" class="m-table_control">上架</el-button>
+                            </template>
+                            <el-button type="text" @click.native.prevent="deleteLesson(scope.$index, tableData)" size="small" class="m-table_control">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-col>
+            <el-col :span="24" class="g-pagination">
+                <el-pagination
+                        background
+                        layout="prev, pager, next,sizes,jumper"
+                        :total="totalRecord"
+                        :page-sizes="[10, 20, 50]"
+                        :page-size="tableParam.pageCount"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="tableParam.curPage"
+                >
+                </el-pagination>
+            </el-col>
+        </el-row>
+
+        <!-- 新建课程模态框 -->
+        <el-dialog
+                title="新建课程"
+                :visible.sync="dialogState.newGlobalLessons"
+                width="30%"
+                :append-to-body="true"
+                class="g-new_lessons"
+                @close="closeNewLessonModel"
+                :close-on-click-modal="false"
+        >
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程名称：</span>
+                <el-input maxlength="30" v-model="newLessonParams.courseName" placeholder="请输入课程名称"></el-input>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程分类：</span>
+                <el-select v-model="newLessonParams.categoryCode" placeholder="请选择课程分类">
+                    <el-option
+                            v-for="item in newLessonCategoryData"
+                            :key="item.categoryCode"
+                            :label="item.courseCategory"
+                            :value="item.categoryCode">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程原价：</span>
+                <div class="el-input">
+                    <input  class="el-input__inner" type="text" onblur="this.value = Number(this.value)"  @input="checkMoneyInputNewLesson" v-model="newLessonParams.coursePrice"  placeholder="请输入课程原价" >
+                </div>
+                <span>元</span>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-default">* </i>优惠价格：</span>
+                <div class="el-input">
+                    <input  class="el-input__inner" type="text" onblur="this.value = Number(this.value)"  @input="checkDisMoneyInputNewLesson" v-model="newLessonParams.discountedPrices"  placeholder="请输入优惠价格" >
+                </div>
+                <span>元</span>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程时长：</span>
+                <div class="el-input">
+                    <input  maxlength="5" class="el-input__inner" type="text" onblur="this.value = this.value ==='0'? '':this.value" oninput="this.value = this.value.replace(/\D/g,'')" v-model="newLessonParams.courseDuration"  placeholder="请输入课程时长" >
+                </div>
+                <span>天</span>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-default">* </i>上课时间：</span>
+                <el-date-picker
+
+                        type="daterange"
+                        range-separator="-"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        v-model="newLessonParams.courseTime"
+                        value-format="yyyy-MM-dd"
+                >
+                </el-date-picker>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>上课地点：</span>
+                <el-input maxlength="100" v-model="newLessonParams.address" placeholder="请输入上课地点"></el-input>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>上架状态：</span>
+                <el-select v-model="newLessonParams.courseStatus" placeholder="请选择上架状态">
+                    <el-option
+                            v-for="item in newLessonStackingStateData"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="m-file_item">
+                <span class="m-title"><i class="f-must">* </i>课程封面：</span>
+                <el-upload class="upload-demo"
+                        :before-upload="newLessonBeforeUploadDetailsList"
+                        action="/img_service/ul/uploadImg.action"
+                        list-type="picture-card"
+                        :on-remove="uploadPicOnRemove"
+                        :data="uploadPicFormData"
+                        name="files"
+                        :on-success="uploadPicOnSuccess"
+                        limit="1"
+                        :on-exceed="uploadPicOverFlow"
+                        :file-list="newLessonBg"
+                        :on-preview="newLessonBgImgViewer"
+                >
+                    <i class="el-icon-plus" style="margin-top: 55px"></i>
+                </el-upload>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-default">* </i>宣传视频：</span>
+                <el-input v-model="newLessonParams.promotionalVideoUrl" placeholder="请添加链接"></el-input>
+            </div>
+            <div class="m-file_item">
+                <span class="m-title"><i class="f-must">* </i>课程简介：</span>
+                <el-upload
+                        :before-upload="newLessonBeforeUploadDetailsList"
+                        :on-preview="newLessonClickUploadDetailsList"
+                        :multiple="true"
+                        :data="uploadPicFormData"
+                        name="files"
+                        class="upload-demo"
+                        action="/img_service/ul/uploadImg.action"
+                        :file-list="newLessonDetailsfileList"
+                        list-type="picture"
+                        :on-success="addNewLessonDetailsFile"
+                        :on-remove="removeNewLessonDetailsFile"
+                >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png/bmp文件,已上传文件可通过点击查看大图</div>
+                </el-upload>
+            </div>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeNewLessonModel">取消</el-button>
+                <el-button type="primary" :loading="newLessonSaveState" @click="saveNewLesson">保存</el-button>
+            </span>
+        </el-dialog>
+
+<!--        编辑课程模态框-->
+        <el-dialog
+                title="编辑课程"
+                :visible.sync="dialogState.editGlobalLessons"
+                width="30%"
+                :append-to-body="true"
+                class="g-new_lessons"
+                @close="closeEditLessonModel"
+                :close-on-click-modal="false"
+        >
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程名称：</span>
+                <el-input maxlength="30" v-model="editLessonParams.courseName" placeholder="请输入课程名称"></el-input>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程分类：</span>
+                <el-select v-model="editLessonParams.categoryCode" placeholder="请选择课程分类">
+                    <el-option
+                            v-for="item in categoryData"
+                            :key="item.categoryCode"
+                            :label="item.courseCategory"
+                            :value="item.categoryCode">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程原价：</span>
+                <div class="el-input">
+                    <input  class="el-input__inner" type="text" onblur="this.value = Number(this.value)"  @input="checkMoneyInputEditLesson" v-model="editLessonParams.coursePrice"  placeholder="请输入课程原价" >
+                </div>
+                <span>元</span>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-default">* </i>优惠价格：</span>
+                <div class="el-input">
+                    <input  class="el-input__inner" type="text" onblur="this.value = Number(this.value)"  @input="checkDisMoneyInputEditLesson" v-model="editLessonParams.discountedPrice"  placeholder="请输入优惠价格" >
+                </div>
+                <span>元</span>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>课程时长：</span>
+                <div class="el-input">
+                    <input maxlength="5" class="el-input__inner" type="text" onblur="this.value = this.value ==='0'? '':this.value" oninput="this.value = this.value.replace(/\D/g,'')" v-model="editLessonParams.courseDuration"  placeholder="请输入课程时长" >
+                </div>
+                <span>天</span>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-default">* </i>上课时间：</span>
+                <el-date-picker
+
+                        type="daterange"
+                        range-separator="-"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        v-model="editLessonParams.courseTime"
+                        value-format="yyyy-MM-dd"
+                >
+                </el-date-picker>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>上课地点：</span>
+                <el-input maxlength="100" v-model="editLessonParams.address" placeholder="请输入上课地点"></el-input>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-must">* </i>上架状态：</span>
+                <el-select v-model="editLessonParams.courseStatus" placeholder="请选择上架状态">
+                    <el-option
+                            v-for="item in newLessonStackingStateData"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <div class="m-file_item">
+                <span class="m-title"><i class="f-must">* </i>课程封面：</span>
+                <el-upload
+                        :before-upload="editLessonBeforeUploadDetailsList"
+                        action="/img_service/ul/uploadImg.action"
+                        list-type="picture-card"
+                        :on-remove="editUploadPicOnRemove"
+                        :data="uploadPicFormData"
+                        name="files"
+                        :on-success="editUploadPicOnSuccess"
+                        limit="1"
+                        :on-exceed="editUloadPicOverFlow"
+                        :file-list="editLessonBg"
+                        :on-preview="editLessonBgImgViewer"
+                >
+                    <i class="el-icon-plus" style="margin-top: 55px"></i>
+                </el-upload>
+            </div>
+            <div class="m-input_item">
+                <span class="m-title"><i class="f-default">* </i>宣传视频：</span>
+                <el-input v-model="editLessonParams.promotionalVideoUrl" placeholder="请添加链接"></el-input>
+            </div>
+            <div class="m-file_item">
+                <span class="m-title"><i class="f-must">* </i>课程简介：</span>
+                <el-upload
+                        :before-upload="editLessonBeforeUploadDetailsList"
+                        :on-preview="editLessonClickUploadDetailsList"
+                        :multiple="true"
+                        :data="uploadPicFormData"
+                        name="files"
+                        class="upload-demo"
+                        action="/img_service/ul/uploadImg.action"
+                        :file-list="editLessonDetailsfileList"
+                        list-type="picture"
+                        :on-success="editAddNewLessonDetailsFile"
+                        :on-remove="editRemoveNewLessonDetailsFile"
+                >
+                    <el-button size="small" type="primary">点击上传</el-button>
+                    <div slot="tip" class="el-upload__tip">只能上传jpg/png/bmp文件,已上传文件可通过点击查看大图</div>
+                </el-upload>
+            </div>
+
+
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="closeEditLessonModel">取消</el-button>
+                <el-button type="primary" @click="saveEditLesson" :loading="editLessonSaveState">保存</el-button>
+            </span>
+        </el-dialog>
+
+<!--        放大图片的模态框-->
+        <el-dialog
+                title="查看大图"
+                :visible.sync="dialogState.bigImg"
+                width="30%"
+                :append-to-body="true"
+                class="g-new_lessons"
+                :close-on-click-modal="false"
+        >
+            <div style="width: 80%;height:max-content">
+                <img :src="bigImgUrl" alt="" style="    max-width: 100%;">
+            </div>
+            <span slot="footer" class="dialog-footer">
+            </span>
+        </el-dialog>
+    </div>
+
+</body>
+<script>
+    let app = new Vue({
+        el: '#app',
+
+        data:{
+            // 编辑课程页面保存按钮状态
+            editLessonSaveState: false,
+            // 新增课程页面保存按钮状态
+            newLessonSaveState: false,
+            // 查看大图是存储的图片链接
+            bigImgUrl:'',
+            // 新增课程页面封面图片文件列表
+            newLessonBg:[],
+            // 编辑课程页面封面图片文件列表
+            editLessonBg:[],
+            // 新增课程页面简介图片文件列表
+            newLessonDetailsfileList:[],
+            // 编辑课程页面简介图片文件列表
+            editLessonDetailsfileList:[],
+            uploadPicArr:[],
+            // 新增课程页面上传图片需要的额外参数
+            uploadPicFormData:{
+              type:'ORIGINAL'
+            },
+            // 弹窗状态
+            dialogState:{
+                // 新增课程页面的可见性
+                newGlobalLessons:false,
+
+                // 编辑课程页面的可见性
+                editGlobalLessons:false,
+
+                // 查看大图页面可见性
+                bigImg: false
+
+            },
+
+            // 给查询组件一个默认的标签，否则不会自动展开
+            queryCollapseActiveNames:'query',
+            // 分页总页数
+            totalRecord:0,
+            // 查询表格数据参数列表
+            tableParam:{
+                pageCount:10,
+                curPage:1,
+                categoryCode:'',
+                courseStatus: '',
+                courseName: ''
+            },
+            // 表格数据
+            tableData:  [],
+            // 所属分类数据
+            categoryData:[],
+
+            // 上架状态数据
+            stackingStateData:[
+
+                {
+                    value: '1',
+                    label: '上架'
+                },{
+                    value: '2',
+                    label: '下架'
+                }
+            ],
+            // 新增课程页面的上架状态数据
+            newLessonStackingStateData:[
+                {
+                    value: '1',
+                    label: '上架'
+                },{
+                    value: '2',
+                    label: '下架'
+                }
+            ],
+            // 新增页面的课程分类
+            newLessonCategoryData:[
+
+            ],
+            // 编辑页面的课程分类
+            editLessonCategoryData:[
+
+            ],
+            // 新增课程数据
+            newLessonParams:{
+                courseStatus:'',
+                courseName:'',
+                categoryCode:'',
+                coursePrice:'',
+                discountedPrices:'',
+                courseDuration:'',
+                address:'',
+                courseTime:'',
+                promotionalVideoUrl:''
+            },
+            // 编辑课程数据
+            editLessonParams:{
+                courseStatus:'',
+                courseName:'',
+                categoryCode:'',
+                coursePrice:'',
+                discountedPrices:'',
+                courseDuration:'',
+                address:'',
+                courseTime:'',
+                promotionalVideoUrl:'',
+                id:''
+            }
+        },
+
+        methods:{
+            // 新增课程限制原价
+            // mark 价格正则方便搜索
+            checkMoneyInputNewLesson(e){
+                let self = this
+                self.newLessonParams.coursePrice = self.newLessonParams.coursePrice.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+                self.newLessonParams.coursePrice = self.newLessonParams.coursePrice.replace(/^\./g,""); //验证第一个字符是数字而不是字符          
+                self.newLessonParams.coursePrice = self.newLessonParams.coursePrice.replace(/\.{2,}/g,"."); //只保留第一个.清除多余的       
+                self.newLessonParams.coursePrice = self.newLessonParams.coursePrice.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+                self.newLessonParams.coursePrice = self.newLessonParams.coursePrice.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+                if(self.newLessonParams.coursePrice === '0'){
+                    self.newLessonParams.coursePrice = ''
+                }
+                if(Number(self.newLessonParams.coursePrice) > 999999.99){
+                    self.newLessonParams.coursePrice = 999999.99
+                }
+            },
+
+            // 新增课程限制折扣价
+            checkDisMoneyInputNewLesson(){
+                let self = this
+                self.newLessonParams.discountedPrices = self.newLessonParams.discountedPrices.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+                self.newLessonParams.discountedPrices = self.newLessonParams.discountedPrices.replace(/^\./g,""); //验证第一个字符是数字而不是字符          
+                self.newLessonParams.discountedPrices = self.newLessonParams.discountedPrices.replace(/\.{2,}/g,"."); //只保留第一个.清除多余的       
+                self.newLessonParams.discountedPrices = self.newLessonParams.discountedPrices.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+                self.newLessonParams.discountedPrices = self.newLessonParams.discountedPrices.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+                if(self.newLessonParams.discountedPrices === '0'){
+                    self.newLessonParams.discountedPrices = ''
+                }
+                if(Number(self.newLessonParams.discountedPrices) > 999999.99){
+                    self.newLessonParams.discountedPrices = 999999.99
+                }
+            },
+            // 编辑课程限制原价
+            checkMoneyInputEditLesson(){
+                let self = this
+                self.editLessonParams.coursePrice = self.editLessonParams.coursePrice.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+                self.editLessonParams.coursePrice = self.editLessonParams.coursePrice.replace(/^\./g,""); //验证第一个字符是数字而不是字符          
+                self.editLessonParams.coursePrice = self.editLessonParams.coursePrice.replace(/\.{2,}/g,"."); //只保留第一个.清除多余的       
+                self.editLessonParams.coursePrice = self.editLessonParams.coursePrice.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+                self.editLessonParams.coursePrice = self.editLessonParams.coursePrice.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+                if(self.editLessonParams.coursePrice === '0'){
+                    self.editLessonParams.coursePrice = ''
+                }
+                if(Number(self.editLessonParams.coursePrice) > 999999.99){
+                    self.editLessonParams.coursePrice = 999999.99
+                }
+
+            },
+            // 编辑课程限制折扣价
+            checkDisMoneyInputEditLesson(){
+                let self = this
+                self.editLessonParams.discountedPrices = self.editLessonParams.discountedPrices.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+                self.editLessonParams.discountedPrices = self.editLessonParams.discountedPrices.replace(/^\./g,""); //验证第一个字符是数字而不是字符          
+                self.editLessonParams.discountedPrices = self.editLessonParams.discountedPrices.replace(/\.{2,}/g,"."); //只保留第一个.清除多余的       
+                self.editLessonParams.discountedPrices = self.editLessonParams.discountedPrices.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+                self.editLessonParams.discountedPrices = self.editLessonParams.discountedPrices.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+                if(self.editLessonParams.discountedPrices === '0'){
+                    self.editLessonParams.discountedPrices = ''
+                }
+                if(Number(self.editLessonParams.discountedPrices) > 999999.99){
+                    self.editLessonParams.discountedPrices = 999999.99
+                }
+            },
+
+            // 关闭新增课程模态框
+            closeNewLessonModel(){
+                this.newLessonBg = [];
+                this.newLessonDetailsfileList = [];
+                this.dialogState.newGlobalLessons = false
+            },
+            // 关闭编辑课程模态框
+            closeEditLessonModel(){
+                this.editLessonBg = [];
+                this.editLessonDetailsfileList = [];
+                this.dialogState.editGlobalLessons = false
+            },
+            // 改变国际课上架状态
+            changeState(num,id){
+                let self = this;
+                let str = num === '1'? '下架':'上架';
+                axios.post('/apidisp/to/dispatcher?key=920273953140170', Qs.stringify({
+                    id:id,
+                    courseStatus:num
+                }))
+                    .then(function (response) {
+                        let data = response.data;
+                        if(data.code === '0'){
+                            self.$message({
+                                showClose: true,
+                                message:  str + '国际课程成功',
+                                type: 'success'
+                            });
+                            self.getTableData()
+                        }else{
+                            self.$message.error(data.msg);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.warn(err)
+                        self.$message.error('数据请求错误，请稍后再试');
+                    });
+            },
+            // 删除国际课
+            deleteLesson(index,tableData){
+                let self = this;
+                self.$confirm('您确定要删除该课程吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios.post('/apidisp/to/dispatcher?key=849337148255434', Qs.stringify({
+                        id:tableData[index].id
+                    }))
+                        .then(function (response) {
+                            let data = response.data;
+                            if(data.code === '0'){
+                                self.$message({
+                                    showClose: true,
+                                    message: '删除国际课程成功',
+                                    type: 'success'
+                                });
+                                self.getTableData()
+                            }else{
+                                self.$message.error(data.msg);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.warn(err);
+                            self.$message.error('数据请求错误，请稍后再试');
+                        });
+
+                }).catch(() => {
+                    self.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
+            },
+            // 获取表格数据
+            getTableData(){
+                let self = this;
+                axios.post('/apidisp/to/dispatcher?key=831374782242746', Qs.stringify(this.tableParam))
+                    .then(function (response) {
+                        let data = response.data;
+                        if(data.code === '0'){
+                            self.tableData = data.data.list;
+                            self.totalRecord = data.data.page.totalRecord
+                        }else{
+                            self.$message.error(data.msg);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.warn(err);
+                        self.$message.error('数据请求错误，请稍后再试');
+                    });
+            },
+            // 获取分类数据
+            getCategoryData(){
+                let self = this;
+                axios.post('/apidisp/to/dispatcher?key=620599756104890')
+                    .then(response => {
+                        let data = response.data;
+                        if(data.code === '0'){
+                            self.categoryData = data.data.list;
+                            self.newLessonCategoryData = data.data.list
+                        }else {
+                            self.$message.error(data.msg);
+                        }
+                    })
+                    .catch(err => {
+                        console.warn(err);
+                        self.$message.error('数据请求错误，请稍后再试');
+                    })
+            },
+            // 页码更换
+            handleCurrentChange(val){
+                this.tableParam.curPage = val;
+                this.getTableData()
+            },
+            // 每页数量更换
+            handleSizeChange(val){
+                this.tableParam.pageCount = val;
+                this.getTableData()
+            },
+            // 重置父页面查询条件
+            resetQueryParams(){
+                this.tableParam.categoryCode = null;
+                this.tableParam.courseName = null;
+                this.tableParam.courseStatus = null;
+                this.getTableData()
+
+            },
+            // 新增课程页面删除封面图片
+            uploadPicOnRemove(file,fileList){
+                this.newLessonBg = fileList
+            },
+            // 编辑课程页面删除封面图片
+            editUploadPicOnRemove(file,fileList){
+                this.editLessonBg = fileList
+            },
+            // 新增课程页面上传图片成功的回调函数
+            uploadPicOnSuccess(res,file,fileList){
+                // 上传文件成功后数组内push上传图片的结果
+                this.newLessonBg = fileList
+            },
+            // 编辑课程页面上传图片成功的回调函数
+            editUploadPicOnSuccess(res,file,fileList){
+                // 上传文件成功后数组内push上传图片的结果
+                this.editLessonBg = fileList
+            },
+            // 新增课程页面上传图片超过指定数量后的回调函数
+            uploadPicOverFlow(){
+                this.$message({
+                    showClose: true,
+                    message: '最多只能上传一张，您可以删除前一张图片后再次上传。',
+                    type: 'warning'
+                });
+            },
+            // 编辑课程页面上传图片超过指定数量后的回调函数
+            editUloadPicOverFlow(){
+                this.$message({
+                    showClose: true,
+                    message: '最多只能上传一张，您可以删除前一张图片后再次上传。',
+                    type: 'warning'
+                });
+            },
+            // 新建课程封面图查看大图回调
+            newLessonBgImgViewer(val){
+                this.bigImgUrl = val.response.reUrl[0];
+                this.dialogState.bigImg = true
+            },
+            // 编辑课程封面图查看大图回调
+            editLessonBgImgViewer(val){
+                this.bigImgUrl = val.response.reUrl[0];
+                this.dialogState.bigImg = true
+            },
+            // 新增课程页面用户点击已经上传的简介图片列表后的回调函数 查看大图
+            newLessonClickUploadDetailsList(val){
+                this.bigImgUrl = val.response.reUrl[0];
+                this.dialogState.bigImg = true
+            },
+            // 编辑课程页面用户点击已经上传的简介图片列表后的回调函数 查看大图
+            editLessonClickUploadDetailsList(val){
+                this.bigImgUrl = val.response.reUrl[0];
+                this.dialogState.bigImg = true
+            },
+            // 新增课程页面用户上传简介图片之前的钩子函数
+            newLessonBeforeUploadDetailsList(file){
+                // 判断用户是否为图片文件
+                if(['.png','.jpg','.bmp'].indexOf(file.name.substr(file.name.lastIndexOf('.'))) === -1){
+                    this.$message({
+                        showClose: true,
+                        message: '只能上传图片类型文件',
+                        type: 'warning'
+                    });
+                    return false;
+                }
+            },
+            // 新增课程页面用户上传简介图片之前的钩子函数
+            editLessonBeforeUploadDetailsList(file){
+                // 判断用户是否为图片文件
+                if(['.png','.jpg','.bmp'].indexOf(file.name.substr(file.name.lastIndexOf('.'))) === -1){
+                    this.$message({
+                        showClose: true,
+                        message: '只能上传图片类型文件',
+                        type: 'warning'
+                    });
+                    return false;
+                }
+            },
+            // 新增课程
+            saveNewLesson(){
+                let self = this;
+                self.newLessonSaveState = true;
+                if(!self.newLessonParams.courseName){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写课程名称',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                if(!self.newLessonParams.categoryCode){
+                    self.$message({
+                        showClose: true,
+                        message: '请选择课程分类',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+
+                if(!self.newLessonParams.coursePrice){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写课程原价',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                if(!self.newLessonParams.courseDuration){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写课程时长',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                if(!self.newLessonParams.address){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写上课地点',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                if(!self.newLessonParams.courseStatus){
+                    self.$message({
+                        showClose: true,
+                        message: '请选择上架状态',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                if(!self.c_newLessonBg){
+                    self.$message({
+                        showClose: true,
+                        message: '请上传封面图片',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                if(self.c_newLessonDetailsFileList.length === 0){
+                    self.$message({
+                        showClose: true,
+                        message: '请上传课程简介图片',
+                        type: 'warning',
+                    });
+                    self.newLessonSaveState = false;
+                    return false;
+                }
+                let obj = {
+                    courseStartTime: self.newLessonParams.courseTime[0],
+                    courseEndTime: self.newLessonParams.courseTime[1],
+                    categoryCode: self.newLessonParams.categoryCode,
+                    courseName: self.newLessonParams.courseName,
+                    coursePrice: self.newLessonParams.coursePrice,
+                    courseDuration: self.newLessonParams.courseDuration,
+                    address : self.newLessonParams.address,
+                    imgUrls:JSON.stringify(self.c_newLessonDetailsFileList),
+                    courseCoverUrl:self.c_newLessonBg,
+                    courseStatus: self.newLessonParams.courseStatus
+                };
+                if(self.newLessonParams.discountedPrices){
+                    obj.discountedPrices = self.newLessonParams.discountedPrices
+                }
+                if(self.newLessonParams.promotionalVideoUrl){
+                    obj.promotionalVideoUrl = self.newLessonParams.promotionalVideoUrl
+                }
+
+                axios.post('/apidisp/to/dispatcher?key=443371621775818',Qs.stringify(obj))
+                    .then(res => {
+                        let data = res.data;
+                        if(data.code === '0'){
+                            self.$message({
+                                showClose: true,
+                                message: '新增国际课程成功',
+                                type: 'success'
+                            });
+                            self.newLessonSaveState = false;
+                            self.dialogState.newGlobalLessons = false;
+                            self.getTableData()
+                        }else{
+                            self.$message({
+                                showClose: true,
+                                message: data.msg,
+                                type: 'warning'
+                            });
+                            self.newLessonSaveState = false;
+                        }
+                    })
+                    .catch(e => {
+                        self.$message({
+                            showClose: true,
+                            message: '数据请求错误，请稍后再试',
+                            type: 'error'
+                        });
+                        self.newLessonSaveState = false;
+                    })
+
+            },
+            // 编辑课程
+            saveEditLesson(){
+                let self = this;
+                self.editLessonSaveState = true;
+                if(!self.editLessonParams.courseName){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写课程名称',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                if(!self.editLessonParams.categoryCode){
+                    self.$message({
+                        showClose: true,
+                        message: '请选择课程分类',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+
+                if(!self.editLessonParams.coursePrice){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写课程原价',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                if(!self.editLessonParams.courseDuration){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写课程时长',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                if(!self.editLessonParams.address){
+                    self.$message({
+                        showClose: true,
+                        message: '请填写上课地点',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                if(!self.editLessonParams.courseStatus){
+                    self.$message({
+                        showClose: true,
+                        message: '请选择上架状态',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                if(!self.c_editLessonBg){
+                    self.$message({
+                        showClose: true,
+                        message: '请上传封面图片',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                if(self.c_editLessonDetailsFileList.length === 0){
+                    self.$message({
+                        showClose: true,
+                        message: '请上传课程简介图片',
+                        type: 'warning',
+                    });
+                    self.editLessonSaveState = false;
+                    return false;
+                }
+                let obj = {
+                    courseStartTime: self.editLessonParams.courseTime[0],
+                    courseEndTime: self.editLessonParams.courseTime[1],
+                    categoryCode: self.editLessonParams.categoryCode,
+                    courseName: self.editLessonParams.courseName,
+                    coursePrice: self.editLessonParams.coursePrice,
+                    courseDuration: self.editLessonParams.courseDuration,
+                    address : self.editLessonParams.address,
+                    imgUrls:JSON.stringify(self.c_editLessonDetailsFileList),
+                    courseCoverUrl:self.c_editLessonBg,
+                    courseStatus: self.editLessonParams.courseStatus,
+                    id: self.editLessonParams.id,
+                    promotionalVideoUrl: self.editLessonParams.promotionalVideoUrl
+                };
+                if(self.editLessonParams.discountedPrices){
+                    obj.discountedPrices = self.editLessonParams.discountedPrices
+                }
+                if(self.editLessonParams.promotionalVideoUrl){
+                    obj.promotionalVideoUrl = self.editLessonParams.promotionalVideoUrl
+                }
+
+                axios.post('/apidisp/to/dispatcher?key=566213837414090',Qs.stringify(obj))
+                    .then(res => {
+                        let data = res.data;
+                        if(data.code === '0'){
+                            self.$message({
+                                showClose: true,
+                                message: '编辑国际课程成功',
+                                type: 'success'
+                            });
+                            self.editLessonSaveState = false;
+                            self.closeEditLessonModel()
+                            self.getTableData()
+
+                        }else{
+                            self.$message({
+                                showClose: true,
+                                message: data.msg,
+                                type: 'warning'
+                            });
+                            self.editLessonSaveState = false;
+                        }
+                    })
+                    .catch(err => {
+                        console.warn(err);
+                        self.$message({
+                            showClose: true,
+                            message: '数据请求错误，请稍后再试',
+                            type: 'error'
+                        });
+                        self.editLessonSaveState = false;
+                    })
+
+            },
+            // 上传新建课程图片简介后放到存储数组
+            addNewLessonDetailsFile(response,file,fileList){
+                this.newLessonDetailsfileList = fileList
+            },
+            // 上传编辑课程图片简介后放到存储数组
+            editAddNewLessonDetailsFile(response,file,fileList){
+                this.editLessonDetailsfileList = fileList
+            },
+            // 删除新建课程已经上传的图片简介
+            removeNewLessonDetailsFile(file,fileList){
+                this.newLessonDetailsfileList = fileList
+            },
+            // 删除编辑课程已经上传的图片简介
+            editRemoveNewLessonDetailsFile(file,fileList){
+                this.editLessonDetailsfileList = fileList
+            },
+            // 用户打开编辑课程模态框
+            openEditLessonModel(index,tableData){
+                let self = this;
+                self.editLessonParams.courseStatus = '';
+                self.editLessonParams.courseName = '';
+                self.editLessonParams.categoryCode = '';
+                self.editLessonParams.coursePrice = '';
+                self.editLessonParams.discountedPrices = '';
+                self.editLessonParams.courseDuration = '';
+                self.editLessonParams.address = '';
+                self.editLessonParams.courseTime = [];
+                self.editLessonParams.promotionalVideoUrl = '';
+                self.dialogState.editGlobalLessons = true;
+                self.editLessonParams.id = tableData[index].id;
+                self.editLessonBg = [];
+                self.editLessonDetailsfileList = [];
+                axios.post('/apidisp/to/dispatcher?key=673091821974458',Qs.stringify({
+                    id:tableData[index].id
+                }))
+                    .then(res => {
+                        let data = res.data;
+                        if(data.code === '0'){
+                            self.$message({
+                                showClose: true,
+                                message: '信息回显成功',
+                                type: 'success'
+                            });
+                            self.editLessonParams.courseStatus = data.data.courseStatus;
+                            self.editLessonParams.courseName = data.data.courseName;
+                            self.editLessonParams.categoryCode = data.data.categoryCode;
+                            self.editLessonParams.coursePrice = data.data.coursePrice;
+                            self.editLessonParams.discountedPrices = data.data.discountedPrices;
+                            self.editLessonParams.courseDuration = data.data.courseDuration;
+                            self.editLessonParams.address = data.data.address;
+                            self.editLessonParams.courseTime = [data.data.courseStartTime,data.data.courseEndTime];
+                            self.editLessonParams.promotionalVideoUrl = data.data.promotionalVideoUrl;
+
+                            self.editLessonBg = [{
+                                name:'1',
+                                url:data.data.courseCoverUrl,
+                                response:{
+                                    reUrl:[data.data.courseCoverUrl]
+                                }
+                            }];
+
+                            let resumeImgs = data.data.courseIntroductionUrl.split(',');
+                            if(data.data.courseIntroductionUrl && resumeImgs.length > 0){
+                                let _arr = [];
+                                for(let i = 0;i<resumeImgs.length;i++){
+                                    let _obj = {
+                                        response:{
+                                            reUrl:[]
+                                        }
+                                    };
+                                    _obj.name = i + 1;
+                                    _obj.url = resumeImgs[i];
+                                    _obj.response.reUrl[0] = resumeImgs[i];
+                                    _arr.push(_obj)
+                                }
+                                self.editLessonDetailsfileList = _arr
+                            }
+                        }else{
+                            self.$message({
+                                showClose: true,
+                                message: data.msg,
+                                type: 'warning'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.warn(err);
+                        self.$message({
+                            showClose: true,
+                            message: '数据请求错误，请稍后再试',
+                            type: 'error'
+                        });
+                    })
+
+            },
+            // 用户打开新增课程模态框
+            openNewLessonModel(){
+               this.dialogState.newGlobalLessons = true;
+                this.newLessonParams.courseStatus = '';
+                this.newLessonParams.courseName = '';
+                this.newLessonParams.categoryCode = '';
+                this.newLessonParams.coursePrice = '';
+                this.newLessonParams.discountedPrices = '';
+                this.newLessonParams.courseDuration = '';
+                this.newLessonParams.address = '';
+                this.newLessonParams.courseTime = [];
+                this.newLessonParams.promotionalVideoUrl = '';
+                this.newLessonDetailsfileList = [];
+                this.newLessonBg = []
+            }
+        },
+        mounted(){
+            this.getTableData();
+            this.getCategoryData()
+        },
+        computed:{
+            // 新建课程页面将已经上传的课程简介图片转换为数组
+            c_newLessonDetailsFileList(){
+                let self = this;
+                let _arr = [];
+                for(let i in self.newLessonDetailsfileList){
+                    _arr.push(self.newLessonDetailsfileList[i].response.reUrl[0])
+                }
+                return _arr
+            },
+            // 新建课程页面将已经上传的课程封面图片转换为字符串
+            c_newLessonBg(){
+                let self = this;
+                return self.newLessonBg.length === 0? '':self.newLessonBg[0].response.reUrl[0]
+            },
+            // 编辑课程页面将已经上传的课程简介图片转换为数组
+            c_editLessonDetailsFileList(){
+                let self = this;
+                let _arr = [];
+                for(let i in self.editLessonDetailsfileList){
+                    _arr.push(self.editLessonDetailsfileList[i].response.reUrl[0])
+                }
+                return _arr
+            },
+            // 编辑课程页面将已经上传的课程封面图片转换为字符串
+            c_editLessonBg(){
+                let self = this;
+                console.log(self.editLessonBg);
+                return self.editLessonBg[0].response.reUrl[0]
+            },
+
+        },
+        watch:{
+
+        }
+
+
+    })
+
+</script>
+</html>
