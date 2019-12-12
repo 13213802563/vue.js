@@ -1,0 +1,18 @@
+// 解决全局 input placeholder 提示文字不明显问题
+input::placeholder,textarea::placeholder{color:#777 !important;}
+//禁用input框字体颜色
+.van-field__control:disabled {color: #777;}
+
+//登录界面input框样式
+.login_input_box{
+    .van-cell{
+        color:#fff;background:transparent;border-bottom:1px solid #fff;margin-top: 2rem;padding: 10px 4px;
+        .van-field__label {max-width: 70px;}
+        .van-field__body .van-icon, .van-icon::before {color: #fff;}
+        .van-field__control{color:#fff;}
+        .van-button{background: #27a9ff;color:#fff;border:1px solid #27a9ff;width:84px;}
+        .van-button--disabled {opacity: 0.98;}
+        input::placeholder,textarea::placeholder{color:#e5e5e5 !important;}
+        &:after {border-bottom: none;}
+     }
+}

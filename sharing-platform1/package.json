@@ -1,0 +1,44 @@
+{
+  "name": "sharing-platform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build --mode development",
+    "pro": "vue-cli-service build --mode production"
+  },
+  "dependencies": {
+    "@vant/weapp": "^1.0.0-beta.4",
+    "axios": "^0.18.0",
+    "better-scroll": "^1.15.2",
+    "core-js": "^2.6.5",
+    "jquery": "^3.4.1",
+    "mint-ui": "^2.2.13",
+    "qrcode": "^1.4.4",
+    "qrcode-npm": "0.0.3",
+    "qrcodejs2": "^0.0.2",
+    "vant": "^1.6.19",
+    "vue": "^2.6.10",
+    "vue-qr": "^2.2.1",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.7.0",
+    "@vue/cli-service": "^3.7.0",
+    "better-scroll": "^1.15.2",
+    "node-sass": "^4.9.0",
+    "sass-loader": "^7.1.0",
+    "scss-loader": "^0.0.1",
+    "vue-template-compiler": "^2.5.21"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}
