@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!--    <link rel="icon" href="<%= BASE_URL %>favicon.ico">-->
+    <title>家政共享平台</title>
+    <style>
+      .f-upload_hide > .el-upload {
+        display: none;
+      }
+
+
+    </style>
+
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but sharing-platform-pc doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <script>
+      var ieGuid = "Microsoft Internet Explorer"&&parseInt(navigator.appVersion.split(";")[1].replace(/[ ]/g, "").replace("MSIE",""))
+      if(isNaN(ieGuid)){
+        ieGuid = 100
+      }
+      if(ieGuid < 9){
+        alert('您的浏览器版本过低，请使用谷歌Chrome或火狐浏览器打开本网站。点击确定跳转到谷歌浏览器下载页')
+        window.location.href = './download.html'
+
+      }
+
+
+    </script>
+    <!-- built files will be auto injected -->
+  </body>
+
+</html>
